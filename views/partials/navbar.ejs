@@ -3,9 +3,30 @@
     <div class="container nav-content">
         <a href="/" class="logo"><span>Impacta</span>Mais</a>
         
-        <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
-            <i data-lucide="menu"></i>
-        </button>
+        <div class="mobile-nav-actions">
+            <button class="mobile-search-toggle" aria-label="Abrir pesquisa" id="btnTriggerSearchMobile">
+                <i data-lucide="search"></i>
+            </button>
+
+            <% if (user) { %>
+                <button class="mobile-search-toggle" aria-label="Criar novo" id="btn-create-navbar-mobile" onclick="document.getElementById('btnOpenCreateModal') && document.getElementById('btnOpenCreateModal').click()" style="background: none; border: none; color: var(--navy-900); display: flex; align-items: center; justify-content: center; padding: 5px;">
+                    <i data-lucide="plus"></i>
+                </button>
+                
+                <button class="mobile-search-toggle" aria-label="Notificações" id="btn-notifications-navbar-mobile" style="position: relative; background: none; border: none; color: var(--navy-900); display: flex; align-items: center; justify-content: center; padding: 5px;">
+                    <i data-lucide="bell"></i>
+                    <% if (locals.unreadCount > 0) { %>
+                        <span class="notification-dot" style="position: absolute; top: 2px; right: 2px; background: #ef4444; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white;"></span>
+                    <% } %>
+                </button>
+            <% } %>
+
+            <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+
         <ul class="nav-links">
             <li><a href="/#hero">Início</a></li>
             <li><a href="/projetos">Projetos</a></li>
@@ -15,12 +36,20 @@
             <li class="mobile-only-auth">
                 <% if (user) { %>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 80%; margin: 1rem auto;">
-                        <a href="/mensagens" class="btn btn-outline" style="width: 100%; border-color: var(--emerald-600); color: var(--emerald-600); position: relative;">
+                        <a href="/mensagens" class="btn btn-outline" style="width: 100%; border-color: var(--navy-900); color: var(--navy-900); position: relative; justify-content: center;">
+                            <i data-lucide="mail" style="width: 18px; height: 18px; margin-right: 8px;"></i>
                             Mensagens
                             <% if (locals.unreadCount > 0) { %>
                                 <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; border: 2px solid white;"><%= unreadCount %></span>
                             <% } %>
                         </a>
+                        <button id="btn-notifications-mobile" class="btn btn-outline" style="width: 100%; border-color: var(--navy-900); color: var(--navy-900); position: relative; justify-content: center; background: none;" onclick="if(window.toggleNotifications) window.toggleNotifications(event)">
+                            <i data-lucide="bell" style="width: 18px; height: 18px; margin-right: 8px;"></i>
+                            Notificações
+                            <% if (locals.unreadCount > 0) { %>
+                                <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; border: 2px solid white;"><%= unreadCount %></span>
+                            <% } %>
+                        </button>
                         <a href="/perfil" class="btn btn-primary" style="width: 100%;">Meu Perfil</a>
                         <a href="/logout" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair da Conta</a>
                     </div>
@@ -55,60 +84,17 @@
                             </span>
                         <% } %>
                     </button>
-                    <!-- ... dropdown content ... -->
-                    
-                    <div id="notifications-dropdown" class="search-dropdown" hidden>
-                        <div style="padding: 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
-                            Notificações
-                            <button id="btn-mark-read" style="background: none; border: none; font-size: 0.75rem; color: var(--emerald-600); cursor: pointer;">Marcar todas como lidas</button>
-                        </div>
-                        <div style="max-height: 350px; overflow-y: auto;">
-                            <% if (notifications.length > 0) { %>
-                                <% notifications.forEach(function(n) { %>
-                                    <div class="notification-item <%= n.read ? '' : 'unread' %>" 
-                                         <% if (n.type === 'new_message') { %>
-                                            onclick="location.href='/mensagens/<%= n.fromId %>'"
-                                            style="cursor: pointer;"
-                                         <% } %>>
-                                        <p>
-                                            <% if (n.type === 'friend_request') { %>
-                                                <strong><%= n.fromName %></strong> enviou uma solicitação de amizade.
-                                            <% } else if (n.type === 'request_accepted') { %>
-                                                <strong><%= n.fromName %></strong> aceitou sua solicitação.
-                                            <% } else if (n.type === 'new_message') { %>
-                                                <strong><%= n.fromName %></strong>: "<%= n.content %>"
-                                            <% } %>
-                                        </p>
-                                        <% if (n.type === 'friend_request') { %>
-                                            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                                                <form action="/amizade/respond" method="POST" style="margin: 0;">
-                                                    <input type="hidden" name="fromId" value="<%= n.fromId %>">
-                                                    <input type="hidden" name="action" value="accept">
-                                                    <button type="submit" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Aceitar</button>
-                                                </form>
-                                                <form action="/amizade/respond" method="POST" style="margin: 0;">
-                                                    <input type="hidden" name="fromId" value="<%= n.fromId %>">
-                                                    <input type="hidden" name="action" value="decline">
-                                                    <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Recusar</button>
-                                                </form>
-                                            </div>
-                                        <% } %>
-                                        <span class="notification-time"><%= new Date(n.date).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) %></span>
-                                    </div>
-                                <% }); %>
-                            <% } else { %>
-                                <div style="padding: 2rem; text-align: center; color: var(--gray-400);">Nenhuma notificação por enquanto.</div>
-                            <% } %>
-                        </div>
-                    </div>
                 </div>
-
+            </div>
             <% } %>
             <!-- Botão de Busca Mobile (Sempre visível no celular) -->
             <button class="btn-navbar-search-mobile" id="btnTriggerSearchMobile" aria-label="Abrir busca">
                 <i data-lucide="search"></i>
             </button>
         </div>
+
+
+
 
 
 
@@ -376,31 +362,68 @@
                     lucide.createIcons();
                 }
 
-                const btn = document.getElementById('btn-notifications');
-                const dropdown = document.getElementById('notifications-dropdown');
-                const btnRead = document.getElementById('btn-mark-read');
-
-                if (btn) {
-                    btn.addEventListener('click', (e) => {
+                // Função GLOBAL para abrir/fechar notificações
+                window.toggleNotifications = function(e) {
+                    if (e) {
+                        e.preventDefault();
                         e.stopPropagation();
-                        dropdown.hidden = !dropdown.hidden;
-                    });
-
-                    document.addEventListener('click', (e) => {
-                        if (dropdown && !dropdown.contains(e.target) && e.target !== btn) {
-                            dropdown.hidden = true;
-                        }
-                    });
-
-                    if (btnRead) {
-                        btnRead.addEventListener('click', async () => {
-                            try {
-                                await fetch('/notificacoes/ler', { method: 'POST' });
-                                location.reload();
-                            } catch (e) { console.error(e); }
-                        });
                     }
-                }
+                    const d = document.getElementById('notifications-dropdown');
+                    if (!d) return;
+
+                    if (d.style.display === 'block') {
+                        d.style.display = 'none';
+                        d.hidden = true;
+                    } else {
+                        d.style.display = 'block';
+                        d.hidden = false;
+                        
+                        // Ajuste para janelinha apenas no celular
+                        if (window.innerWidth <= 768) {
+                            d.style.position = 'fixed';
+                            d.style.top = '50%';
+                            d.style.left = '50%';
+                            d.style.transform = 'translate(-50%, -50%)';
+                            d.style.width = '90%';
+                            d.style.maxWidth = '350px';
+                            d.style.zIndex = '10005';
+                            d.style.boxShadow = '0 0 0 100vmax rgba(0,0,0,0.5), 0 10px 25px rgba(0,0,0,0.2)'; // Fundo escurecido e sombra
+                            d.style.borderRadius = 'var(--radius-lg)';
+                            d.style.border = '2px solid var(--emerald-500)';
+                            d.style.background = 'var(--white)';
+                        } else {
+                            // Reset para PC com cálculo dinâmico para posicionar sob o botão
+                            const btnDesktop = document.getElementById('btn-notifications');
+                            if (btnDesktop) {
+                                const rect = btnDesktop.getBoundingClientRect();
+                                d.style.position = 'fixed';
+                                d.style.top = (rect.bottom + 10) + 'px';
+                                d.style.right = (window.innerWidth - rect.right) + 'px';
+                                d.style.left = 'auto';
+                                d.style.transform = 'none';
+                                d.style.width = '350px';
+                                d.style.zIndex = '1000';
+                                d.style.boxShadow = 'var(--shadow-lg)';
+                                d.style.borderRadius = 'var(--radius-md)';
+                            }
+                        }
+
+                        // Remove badges (bolinhas vermelhas) visualmente ao abrir
+                        document.querySelectorAll('.notification-badge, .notification-dot').forEach(b => b.style.display = 'none');
+                        
+                        // Envia request silenciosa para marcar como lidas no banco
+                        fetch('/notificacoes/ler', { method: 'POST' }).catch(err => console.error('[NOTIF] Erro automático:', err));
+                    }
+                };
+
+                const btnNotif = document.getElementById('btn-notifications');
+                const btnNotifMobile = document.getElementById('btn-notifications-mobile');
+                const btnNotifNavbarMobile = document.getElementById('btn-notifications-navbar-mobile');
+
+                // Registro dos cliques nos botões
+                if (btnNotif) btnNotif.addEventListener('click', window.toggleNotifications);
+                if (btnNotifMobile) btnNotifMobile.addEventListener('click', window.toggleNotifications);
+                if (btnNotifNavbarMobile) btnNotifNavbarMobile.addEventListener('click', window.toggleNotifications);
 
                 // Mobile Menu Toggle
                 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
@@ -419,6 +442,32 @@
                         lucide.createIcons();
                     });
                 }
+
+                // Fechar ao clicar fora
+                document.addEventListener('click', (e) => {
+                    const d = document.getElementById('notifications-dropdown');
+                    if (d && !d.hidden) {
+                        const clickedOnBtn = e.target.closest('#btn-notifications') || 
+                                           e.target.closest('#btn-notifications-mobile') ||
+                                           e.target.closest('#btn-notifications-navbar-mobile');
+                        
+                        if (!d.contains(e.target) && !clickedOnBtn) {
+                            d.hidden = true;
+                            d.style.display = 'none'; // Importante para zerar o estado visual
+                        }
+                    }
+                });
+
+                // Lógica de marcar como lidas
+                if (btnMarkRead) {
+                    btnMarkRead.addEventListener('click', async () => {
+                        try {
+                            await fetch('/notificacoes/ler', { method: 'POST' });
+                            location.reload();
+                        } catch (err) { console.error('[NOTIF] Erro ao marcar como lidas:', err); }
+                    });
+                }
+
             });
         </script>
     </div>
@@ -451,14 +500,60 @@
 </div>
 <% } %>
 
+<!-- Central de Notificações Global (Modal Independente) -->
+<% if (user) { %>
+<div id="notifications-dropdown" class="search-dropdown" hidden style="background: var(--white); z-index: 10000;">
+    <div style="padding: 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+        Notificações
+        <button id="btn-mark-read" style="background: none; border: none; font-size: 0.75rem; color: var(--emerald-600); cursor: pointer;">Marcar todas como lidas</button>
+    </div>
+    <div style="max-height: 350px; overflow-y: auto;">
+        <% if (notifications.length > 0) { %>
+            <% notifications.forEach(function(n) { %>
+                <div class="notification-item <%= n.read ? '' : 'unread' %>" 
+                     <% if (n.type === 'new_message') { %>
+                        onclick="location.href='/mensagens/<%= n.fromId %>'"
+                        style="cursor: pointer;"
+                     <% } %>>
+                    <p>
+                        <% if (n.type === 'friend_request') { %>
+                            <strong><%= n.fromName %></strong> enviou uma solicitação de amizade.
+                        <% } else if (n.type === 'request_accepted') { %>
+                            <strong><%= n.fromName %></strong> aceitou sua solicitação.
+                        <% } else if (n.type === 'new_message') { %>
+                            <strong><%= n.fromName %></strong>: "<%= n.content %>"
+                        <% } %>
+                    </p>
+                    <% if (n.type === 'friend_request') { %>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                            <form action="/amizade/respond" method="POST" style="margin: 0;">
+                                <input type="hidden" name="fromId" value="<%= n.fromId %>">
+                                <input type="hidden" name="action" value="accept">
+                                <button type="submit" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Aceitar</button>
+                            </form>
+                            <form action="/amizade/respond" method="POST" style="margin: 0;">
+                                <input type="hidden" name="fromId" value="<%= n.fromId %>">
+                                <input type="hidden" name="action" value="decline">
+                                <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Recusar</button>
+                            </form>
+                        </div>
+                    <% } %>
+                    <span class="notification-time"><%= new Date(n.date).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) %></span>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div style="padding: 2rem; text-align: center; color: var(--gray-400);">Nenhuma notificação por enquanto.</div>
+        <% } %>
+    </div>
+</div>
+<% } %>
+
 <!-- Floating Search Button -->
 <div class="floating-search-container">
     <div class="floating-search-bar" id="floatingSearchBar" style="display: none;">
-        <div class="search-input-wrapper">
-            <i data-lucide="search" class="search-icon"></i>
-            <input type="text" id="floatingSearchInput" placeholder="Buscar projeto/pessoa..." aria-label="Buscar projeto ou pessoa">
-            <div id="floatingSearchResults" class="search-dropdown" hidden></div>
-        </div>
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="floatingSearchInput" placeholder="Buscar projeto/pessoa..." aria-label="Buscar projeto ou pessoa">
+        <div id="floatingSearchResults" class="search-dropdown" hidden></div>
         <button id="btnCloseFloatingSearch" class="btn-close-floating" title="Fechar busca">
             <i data-lucide="x" style="width: 20px; height: 20px;"></i>
         </button>
@@ -476,11 +571,27 @@
         const searchBar = document.getElementById('floatingSearchBar');
         const input = document.getElementById('floatingSearchInput');
 
-        const openSearch = () => {
-            searchBar.style.display = 'flex';
-            if (btnOpen) btnOpen.style.display = 'none';
-            input.focus();
+        const openSearch = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            console.log('[SEARCH] Abrindo busca mobile...');
+            const sBar = document.getElementById('floatingSearchBar');
+            const sInput = document.getElementById('floatingSearchInput');
+            const sBtnOpen = document.getElementById('btnOpenFloatingSearch');
+
+            if (sBar) {
+                sBar.style.display = 'flex';
+                sBar.style.visibility = 'visible';
+                sBar.style.opacity = '1';
+            }
+            if (sBtnOpen) sBtnOpen.style.display = 'none';
+            if (sInput) {
+                setTimeout(() => sInput.focus(), 150);
+            }
         };
+        window.openSearch = openSearch;
 
         if (btnOpen) btnOpen.addEventListener('click', openSearch);
         if (btnTriggerMobile) btnTriggerMobile.addEventListener('click', openSearch);

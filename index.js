@@ -684,6 +684,12 @@ async function startServer() {
                     { $pull: { friendRequests: { fromId: senderId } } }
                 );
 
+                // Marca a notificação correspondente como lida
+                await db.collection('users').updateOne(
+                    { _id: myId, "notifications.type": "friend_request", "notifications.fromId": senderId },
+                    { $set: { "notifications.$.read": true } }
+                );
+
                 res.redirect(req.get('Referrer') || '/');
             } catch (error) {
                 console.error('Erro ao responder amizade:', error);
