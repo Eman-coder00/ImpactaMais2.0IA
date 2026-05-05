@@ -33,26 +33,49 @@
 
                     <div class="project-actions" style="margin-top: 2rem;">
                         <% if (user) { %>
-                            <% if (locals.isParticipating) { %>
-                                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                    <div class="alert" style="background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 1.5rem; border-radius: 12px; text-align: center; font-weight: 600;">
-                                        <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 0.5rem;"></i> Você está inscrito neste evento!
+                            <% if (event.authorId.toString() !== user._id.toString()) { %>
+                                <% if (locals.isParticipating) { %>
+                                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                        <div class="alert" style="background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 1.5rem; border-radius: 12px; text-align: center; font-weight: 600;">
+                                            <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 0.5rem;"></i> Você está inscrito neste evento!
+                                        </div>
+                                        <form action="/evento/cancelar" method="POST">
+                                            <input type="hidden" name="eventId" value="<%= event._id %>">
+                                            <button type="submit" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair do Evento</button>
+                                        </form>
                                     </div>
-                                    <form action="/evento/cancelar" method="POST">
+                                <% } else { %>
+                                    <form action="/evento/inscrever" method="POST">
                                         <input type="hidden" name="eventId" value="<%= event._id %>">
-                                        <button type="submit" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair do Evento</button>
+                                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 0.75rem; text-align: center; line-height: 1.4;">
+                                            Ao se inscrever, você autoriza o compartilhamento do seu e-mail com o organizador do evento para fins de contato.
+                                        </p>
+                                        <button type="submit" class="btn btn-primary" style="width: 100%; height: 60px; font-size: 1.2rem;">Participar deste Evento</button>
                                     </form>
-                                </div>
-                            <% } else { %>
-                                <form action="/evento/inscrever" method="POST">
-                                    <input type="hidden" name="eventId" value="<%= event._id %>">
-                                    <button type="submit" class="btn btn-primary" style="width: 100%; height: 60px; font-size: 1.2rem;">Participar deste Evento</button>
-                                </form>
+                                <% } %>
                             <% } %>
                         <% } else { %>
                             <a href="/login" class="btn btn-primary" style="width: 100%; height: 60px; font-size: 1.2rem;">Faça login para participar</a>
                         <% } %>
                     </div>
+
+                    <% if (user && event.authorId.toString() === user._id.toString()) { %>
+                        <div class="organizer-actions" style="margin-top: 2rem; padding: 1.5rem; background: var(--gray-50); border-radius: 16px; border: 1px dashed var(--gray-300);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: var(--navy-900); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="settings" style="width: 20px; height: 20px;"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; color: var(--navy-900);">Área do Organizador</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--gray-500);">Gerencie os participantes do seu evento</p>
+                                </div>
+                            </div>
+                            <a href="/evento/exportar/<%= event._id %>" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: white; border-color: var(--gray-200); color: var(--navy-900); font-weight: 600; padding: 0.8rem;">
+                                <i data-lucide="download" style="width: 18px; height: 18px;"></i>
+                                Baixar Lista de Participantes (CSV)
+                            </a>
+                        </div>
+                    <% } %>
                 </div>
 
                 <aside class="sidebar animate-up">

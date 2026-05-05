@@ -608,6 +608,50 @@ async function startServer() {
                 res.redirect(req.get('Referrer') || '/');
             }
         });
+        
+        app.get('/evento/exportar/:id', async (req, res) => {
+            if (!req.session.user) return res.status(401).send('Não autorizado');
+            
+            try {
+                const eventId = new ObjectId(req.params.id);
+                const event = await db.collection('events').findOne({ _id: eventId });
+                
+                if (!event) return res.status(404).send('Evento não encontrado');
+                
+                // Verificar se o usuário logado é o autor do evento
+                if (event.authorId.toString() !== req.session.user.id) {
+                    return res.status(403).send('Apenas o organizador pode baixar este relatório');
+                }
+                
+                // Buscar dados dos participantes
+                const participantIds = event.participants || [];
+                const participants = await db.collection('users').find(
+                    { _id: { $in: participantIds } },
+                    { projection: { name: 1, email: 1 } }
+                ).toArray();
+                
+                // Gerar conteúdo CSV
+                let csvContent = 'Nome,Email\n';
+                participants.forEach(p => {
+                    const safeName = (p.name || 'Sem nome').replace(/"/g, '""');
+                    const safeEmail = (p.email || 'Sem email').replace(/"/g, '""');
+                    csvContent += `"${safeName}","${safeEmail}"\n`;
+                });
+                
+                // Configurar headers para download
+                const fileName = `participantes-${event.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.csv`;
+                res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+                
+                // Adicionar BOM para Excel (UTF-8)
+                res.write('\uFEFF');
+                res.end(csvContent);
+                
+            } catch (error) {
+                console.error('Erro ao exportar participantes:', error);
+                res.status(500).send('Erro interno ao gerar o relatório');
+            }
+        });
 
         app.post('/amizade/request', async (req, res) => {
             if (!req.session.user) return res.redirect('/login');

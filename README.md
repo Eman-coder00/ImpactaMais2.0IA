@@ -14,7 +14,9 @@ O **Impacta Mais** é uma plataforma dinâmica projetada para conectar voluntár
 - **Rede Social**: Perfis públicos, sistema de amizades, notificações em tempo real e chat privado entre amigos.
 - **Gestão de Projetos**: Criação de projetos sociais com sistema de curtidas (AJAX) e comentários.
 - **Eventos Comunitários**: Inscrição em eventos com contador de participantes e integração no perfil do usuário.
-- **Segurança Reforçada**: Proteção contra NoSQL Injection, cabeçalhos de segurança (Helmet) e sanitização de dados.
+- **Ferramentas para Organizadores**: Área de gestão exclusiva para criadores de eventos com exportação de lista de participantes em CSV (Excel Ready).
+- **Transparência de Dados**: Sistema de consentimento explícito para compartilhamento de e-mail entre participantes e organizadores.
+- **Segurança Reforçada**: Proteção contra NoSQL Injection, cabeçalhos de segurança (Helmet) e controle de acesso rigoroso a rotas de exportação.
 
 ## 🛠️ Tecnologias Utilizadas
 

@@ -384,7 +384,7 @@ footer {
 /* Perfil Page Specific Fixes */
 .profile-secondary-grid {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 1.5rem !important;
 }
 

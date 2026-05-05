@@ -25,6 +25,7 @@
     - `helmet` para proteção de cabeçalhos.
     - Escapamento de Regex para evitar NoSQL Injection na busca.
     - Validação de tokens para recuperação de senha.
+    - **Controle de Acesso em Exportações**: Verificação de autorização (Middleware + Lógica de Rota) para garantir que apenas organizadores exportem dados de participantes.
 
 ### Banco de Dados (MongoDB Nativo)
 - **Coleções**:
@@ -43,6 +44,7 @@
 - **Login Seguro**: Gestão de sessão persistente.
 - **Recuperação de Senha**: Sistema de "Esqueci minha senha" com envio de e-mail (Nodemailer) e tokens de expiração (1h).
 - **Edição de Perfil**: Alteração de Biografia e Foto de Perfil (Suporte a Base64).
+- **Painel de Controle do Usuário**: Visualização de projetos criados, amigos e agora uma seção dedicada para **"Meus Eventos"** organizados.
 
 ### 🤝 Ecossistema Social e Compartilhamento
 - **Sistema de Amizade**: Envio, aceitação e recusa de solicitações entre usuários com verificação de status em tempo real.
@@ -63,7 +65,10 @@
 - **Eventos e Agenda**:
     - Agendamento com data, hora e local.
     - **Inscrição Rápida (AJAX)**: Botão "Avise-me" na barra lateral de projetos que inscreve o usuário instantaneamente no evento com feedback visual imediato.
-    - Gestão de participação vinculada ao perfil.
+    - **Transparência e Consentimento**: Nota informativa automática sobre compartilhamento de e-mail com o organizador no momento da inscrição.
+    - **Área do Organizador**: Painel exclusivo visível apenas para o autor do evento, permitindo a gestão de inscritos.
+    - **Exportação de Dados**: Funcionalidade de download da lista de participantes em formato **CSV** (otimizado para Excel com BOM UTF-8), acessível apenas por organizadores autorizados.
+    - Gestão de participação vinculada ao perfil com lógica de ocultação de botões de inscrição para o próprio criador.
 
 ### ✨ Polimento UI/UX e Conformidade
 - **Página de Política de Privacidade**: Nova seção dedicada para transparência de dados, integrada diretamente no fluxo de cadastro.
@@ -111,7 +116,8 @@ sequenceDiagram
 - [x] **Sincronização**: Mensagens e conversas atualizando sem refresh.
 - [x] **Acessibilidade**: Validação manual de teclado e hierarquia de títulos concluída.
 - [x] **Segurança**: Proteção de rotas, hashing de senhas e sanitização de entradas.
-- [x] **Conformidade Legal**: Política de privacidade implementada e vinculada.
+- [x] **Conformidade Legal**: Política de privacidade implementada e vinculada com notas de consentimento em inscrições.
+- [x] **Ferramentas de Gestão**: Exportação CSV funcional e área do organizador protegida.
 
 ---
 

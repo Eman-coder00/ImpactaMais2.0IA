@@ -97,6 +97,28 @@
                         </div>
 
                         <div class="animate-up profile-card-mini">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--navy-900);">Meus Eventos</h3>
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                <% if (locals.myEvents && myEvents.length > 0) { %>
+                                    <% myEvents.forEach(function(event) { %>
+                                        <a href="/evento?id=<%= event._id %>" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: var(--gray-50); border-radius: 8px; text-decoration: none; transition: all 0.2s; overflow: hidden;">
+                                            <div style="width: 45px; height: 45px; background: white; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--gray-200);">
+                                                <span style="font-size: 0.9rem; font-weight: 800; color: var(--navy-900); line-height: 1;"><%= event.date.split('-')[2] %></span>
+                                                <span style="font-size: 0.6rem; text-transform: uppercase; color: var(--emerald-600);"><%= event.date.split('-')[1] %></span>
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <h4 style="color: var(--navy-900); margin: 0; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= event.title %></h4>
+                                                <span style="font-size: 0.75rem; color: var(--gray-500);"><%= event.location %></span>
+                                            </div>
+                                        </a>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p style="color: var(--gray-400); font-size: 0.85rem; text-align: center;">Nenhum evento criado.</p>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="animate-up profile-card-mini">
                             <h3 style="font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--navy-900);">Amigos</h3>
                             <div id="btn-view-friends" style="cursor: pointer; padding: 1.5rem; background: var(--gray-50); border-radius: 8px; text-align: center; border: 1px solid var(--gray-100); transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
                                 <div style="width: 45px; height: 45px; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
