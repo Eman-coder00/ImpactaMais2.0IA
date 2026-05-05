@@ -1,0 +1,121 @@
+# DOCUMENTAÇÃO TÉCNICA E FUNCIONAL - IMPACTA MAIS
+
+> "Impacta Mais: Uma plataforma de conexão social para projetos e eventos de impacto positivo, focada em acessibilidade (WCAG 2.1 AA) e performance (Node.js + MongoDB Nativo)."
+
+---
+
+## 1. ARQUITETURA DO SISTEMA
+
+### Front-end (EJS + CSS Vanilla)
+- **Engine**: EJS para renderização server-side dinâmica.
+- **Estilização**: CSS Vanilla com Design System baseado em variáveis (Cores: Navy #0f172a, Brand Blue #12678D, Emerald #10b981).
+- **Responsividade**: Layout fluído de **320px a 1920px** com componentes adaptativos (ex: Navbar com Menu Hambúrguer).
+- **UX Especial**: 
+    - Splash Screen animado (Handshake SVG) exibido apenas no primeiro acesso da sessão.
+    - **Skeletons de Loading**: Feedback visual pulsante na busca global para reduzir o tempo de espera percebido.
+    - **Barra de Progresso (Top Loading)**: Feedback imediato de navegação no topo da tela ao trocar de página.
+    - **Transições Fluidas**: Animações de entrada (`Fade In Up`) e scroll suave com `IntersectionObserver`.
+    - **Hero Modernizado**: Layout centralizado com divisor de ondas (SVG) para transições orgânicas entre seções.
+    - Scrollbars customizados em áreas de alta densidade de informação (ex: Lista de Amigos no compartilhamento).
+
+### Back-end (Node.js + Express 5)
+- **Sessões**: `express-session` com persistência em MongoDB via `connect-mongo`.
+- **Segurança**: 
+    - `bcryptjs` para hashing de senhas.
+    - `helmet` para proteção de cabeçalhos.
+    - Escapamento de Regex para evitar NoSQL Injection na busca.
+    - Validação de tokens para recuperação de senha.
+
+### Banco de Dados (MongoDB Nativo)
+- **Coleções**:
+    - `users`: Perfis, amizades, notificações, histórico de eventos.
+    - `posts`: Projetos sociais, slugs únicos, curtidas, comentários e descrições detalhadas.
+    - `events`: Agenda de ações sociais e lista de participantes.
+    - `messages`: Histórico de mensagens privadas entre amigos.
+    - `sessions`: Persistência de estado do usuário.
+
+---
+
+## 2. FUNCIONALIDADES IMPLEMENTADAS
+
+### 🔐 Autenticação e Perfil
+- **Fluxo de Cadastro**: Validação de e-mail único e confirmação de senha com vínculo à Política de Privacidade.
+- **Login Seguro**: Gestão de sessão persistente.
+- **Recuperação de Senha**: Sistema de "Esqueci minha senha" com envio de e-mail (Nodemailer) e tokens de expiração (1h).
+- **Edição de Perfil**: Alteração de Biografia e Foto de Perfil (Suporte a Base64).
+
+### 🤝 Ecossistema Social e Compartilhamento
+- **Sistema de Amizade**: Envio, aceitação e recusa de solicitações entre usuários com verificação de status em tempo real.
+- **Notificações Integradas**: Alertas visuais para novas solicitações, aceites de amizade e novas mensagens.
+- **Mensagens Dinâmicas**: 
+    - Chat direto entre amigos com persistência de histórico.
+    - **Sincronização em Tempo Real (Polling)**: A lista de conversas e as mensagens são atualizadas automaticamente a cada 5 segundos sem necessidade de recarregar a página.
+- **Busca Global**: Barra de pesquisa inteligente que localiza **Projetos** e **Pessoas** simultaneamente.
+- **Compartilhamento Integrado**: 
+    - Modal de compartilhamento com cópia rápida de URL do projeto.
+    - **Encaminhamento Direto**: Envio de links de projetos para amigos via sistema de mensagens interno com um clique.
+
+### 🚀 Gestão de Conteúdo e Eventos
+- **Projetos (Posts)**:
+    - Criação com upload de imagem, descrição curta e **descrição detalhada (Rich Text/Long Description)**.
+    - Geração automática de Slugs amigáveis para URLs limpas.
+    - Sistema de **Likes** e **Comentários**.
+- **Eventos e Agenda**:
+    - Agendamento com data, hora e local.
+    - **Inscrição Rápida (AJAX)**: Botão "Avise-me" na barra lateral de projetos que inscreve o usuário instantaneamente no evento com feedback visual imediato.
+    - Gestão de participação vinculada ao perfil.
+
+### ✨ Polimento UI/UX e Conformidade
+- **Página de Política de Privacidade**: Nova seção dedicada para transparência de dados, integrada diretamente no fluxo de cadastro.
+- **Feedback Visual Instantâneo**: Barra de progresso no topo da tela acionada em toda transição de página.
+- **Navegação Mobile Otimizada**: Menu hambúrguer em tela cheia com acesso rápido a mensagens e perfil.
+
+---
+
+## 3. DIRETRIZES DE ACESSIBILIDADE (WCAG 2.1 AA)
+
+1.  **Navegação por Teclado**: 
+    - *Skip Link* funcional no topo para saltar navegações repetitivas.
+    - Estados de `:focus-visible` com anel de destaque (Emerald 500) de alto contraste.
+    - Trava de foco em modais e fechamento via tecla `Esc`.
+2.  **Hierarquia de Títulos (H1-H6)**: Estrutura semântica corrigida em todas as páginas para garantir um único `H1` por documento e progressão lógica.
+3.  **Semântica HTML5**: Uso rigoroso de `<main>`, `<nav>`, `<article>` e `<section>`.
+4.  **Contraste e Cores**: Paleta validada e suporte a filtros de daltonismo/dislexia via menu de acessibilidade.
+5.  **Formulários**: Labels explícitos associados via `id` e mensagens de erro acessíveis.
+
+---
+
+## 4. ESPECIFICAÇÕES TÉCNICAS (EXEMPLOS)
+
+### Fluxo de Mensagens Dinâmicas (Polling)
+```mermaid
+sequenceDiagram
+  participant B as Navegador (Cliente)
+  participant S as Servidor (Express)
+  participant DB as MongoDB
+
+  loop a cada 5 segundos
+    B->>S: GET /api/conversations
+    S->>DB: Busca mensagens recentes
+    DB-->>S: Lista de conversas atualizada
+    S-->>B: Retorna JSON com dados
+    B->>B: Atualiza UI via JavaScript (DOM)
+  end
+```
+
+---
+
+## 5. STATUS DE VALIDAÇÃO (CHECKLIST)
+
+- [x] **Responsividade**: Testado em Mobile (320px), Tablet (768px) e Desktop (1920px).
+- [x] **Sincronização**: Mensagens e conversas atualizando sem refresh.
+- [x] **Acessibilidade**: Validação manual de teclado e hierarquia de títulos concluída.
+- [x] **Segurança**: Proteção de rotas, hashing de senhas e sanitização de entradas.
+- [x] **Conformidade Legal**: Política de privacidade implementada e vinculada.
+
+---
+
+## 6. MANUTENÇÃO E EXPANSÃO
+- **Logs**: Monitoramento básico via console em rotas críticas.
+- **Escalabilidade**: Sistema de polling preparado para transição suave para WebSockets se necessário.
+- **Performance**: Requisições de API otimizadas e imagens processadas em Base64.

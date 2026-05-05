@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Minhas Mensagens' }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main id="main-content" style="background: var(--gray-50); min-height: 100vh; padding-top: 80px;">
+        <div class="container" style="max-width: 800px; padding-top: 2rem; padding-bottom: 4rem;">
+            
+            <div class="messages-header" style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <h1 style="font-size: 1.8rem; color: var(--navy-900); margin-bottom: 0.5rem;">Mensagens</h1>
+                    <p style="color: var(--gray-500); font-size: 0.95rem;">Conecte-se e colabore com outros impactadores.</p>
+                </div>
+                <div style="background: white; padding: 0.75rem 1.25rem; border-radius: 100px; border: 1px solid var(--gray-200); display: flex; align-items: center; gap: 0.5rem; color: var(--emerald-600); font-weight: 600; font-size: 0.9rem;">
+                    <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
+                    <%= conversations.length %> Conversas
+                </div>
+            </div>
+
+            <div class="conversations-list" style="background: white; border-radius: 16px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: var(--shadow-sm);">
+                <% if (conversations.length === 0) { %>
+                    <div style="padding: 5rem 2rem; text-align: center; color: var(--gray-400);">
+                        <div style="width: 80px; height: 80px; background: var(--gray-50); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                            <i data-lucide="mail-question" style="width: 40px; height: 40px; opacity: 0.3;"></i>
+                        </div>
+                        <h3 style="color: var(--navy-900); margin-bottom: 0.5rem;">Nenhuma conversa ainda</h3>
+                        <p style="max-width: 300px; margin: 0 auto;">Visite o perfil de um amigo e clique em "Mensagem" para começar a impactar juntos!</p>
+                        <a href="/projetos" class="btn btn-primary" style="margin-top: 2rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            Explorar Projetos <i data-lucide="arrow-right"></i>
+                        </a>
+                    </div>
+                <% } else { %>
+                    <% conversations.forEach(function(chat) { %>
+                        <a href="/mensagens/<%= chat.friendId %>" class="conversation-item" style="display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem 1.5rem; text-decoration: none; border-bottom: 1px solid var(--gray-100); transition: all 0.2s ease;">
+                            <div class="friend-avatar" style="width: 56px; height: 56px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; font-size: 1.2rem; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                <% if (chat.friendPic) { %>
+                                    <img src="<%= chat.friendPic %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                <% } else { %>
+                                    <%= chat.friendName.charAt(0).toUpperCase() %>
+                                <% } %>
+                            </div>
+                            
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                    <h4 style="margin: 0; color: var(--navy-900); font-size: 1.05rem;"><%= chat.friendName %></h4>
+                                    <span style="font-size: 0.75rem; color: var(--gray-400);">
+                                        <%= new Date(chat.lastMessageTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) %>
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <p style="margin: 0; color: var(--gray-500); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%;">
+                                        <% if (chat.lastMessageSenderId.toString() === user._id.toString()) { %>
+                                            <span style="color: var(--emerald-600); font-weight: 600;">Você: </span>
+                                        <% } %>
+                                        <%= chat.lastMessageContent %>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </a>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .conversation-item:last-child { border-bottom: none; }
+        .conversation-item:hover {
+            background: var(--gray-50);
+            transform: translateX(4px);
+        }
+        .conversation-item:active {
+            background: #f0fdf4;
+            transform: translateX(0);
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const myId = '<%= user._id %>';
+            const list = document.querySelector('.conversations-list');
+            const badgeCount = document.querySelector('.messages-header div[style*="background: white"]');
+
+            async function syncConversations() {
+                try {
+                    const response = await fetch('/api/conversations');
+                    if (response.ok) {
+                        const data = await response.json();
+                        updateUI(data.conversations);
+                    }
+                } catch (error) {
+                    console.error('Erro ao sincronizar:', error);
+                }
+            }
+
+            function updateUI(conversations) {
+                if (badgeCount) {
+                    badgeCount.innerHTML = `<i data-lucide="message-circle" style="width: 18px; height: 18px;"></i> ${conversations.length} Conversas`;
+                    lucide.createIcons();
+                }
+
+                if (conversations.length === 0) return;
+
+                let html = '';
+                conversations.forEach(chat => {
+                    const time = new Date(chat.lastMessageTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    const isMe = chat.lastMessageSenderId === myId;
+                    const avatar = chat.friendPic 
+                        ? `<img src="${chat.friendPic}" style="width: 100%; height: 100%; object-fit: cover;">`
+                        : chat.friendName.charAt(0).toUpperCase();
+
+                    html += `
+                        <a href="/mensagens/${chat.friendId}" class="conversation-item" style="display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem 1.5rem; text-decoration: none; border-bottom: 1px solid var(--gray-100); transition: all 0.2s ease;">
+                            <div class="friend-avatar" style="width: 56px; height: 56px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; font-size: 1.2rem; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                ${avatar}
+                            </div>
+                            
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                    <h4 style="margin: 0; color: var(--navy-900); font-size: 1.05rem;">${chat.friendName}</h4>
+                                    <span style="font-size: 0.75rem; color: var(--gray-400);">${time}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <p style="margin: 0; color: var(--gray-500); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 85%;">
+                                        ${isMe ? '<span style="color: var(--emerald-600); font-weight: 600;">Você: </span>' : ''}
+                                        ${chat.lastMessageContent}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                });
+
+                list.innerHTML = html;
+                lucide.createIcons();
+            }
+
+            // Polling a cada 5 segundos
+            setInterval(syncConversations, 5000);
+        });
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

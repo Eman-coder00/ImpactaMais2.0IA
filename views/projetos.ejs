@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Feed de Projetos' }) %>
+<link rel="stylesheet" href="/css/feed.css">
+<body>
+    <%- include('partials/navbar') %>
+
+    <main id="main-content" style="background: var(--gray-50); min-height: 100vh; padding-top: 6rem;">
+        <div class="container">
+            <div class="feed-container">
+                
+                <!-- Main Feed -->
+                <div class="main-feed">
+                    <!-- Global Filters (Compact) -->
+                    <div class="filter-bar animate-up" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: 12px; border: 1px solid var(--gray-200);">
+                        <div style="display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="tag" style="width: 18px; height: 18px; color: var(--emerald-600);"></i>
+                                <select id="filterCategory" onchange="updateFilters()" style="border: none; background: none; font-weight: 600; cursor: pointer; outline: none; font-family: inherit;">
+                                    <option value="Todos" <%= locals.currentCategory === 'Todos' ? 'selected' : '' %>>Todas as Categorias</option>
+                                    <option value="Educação" <%= locals.currentCategory === 'Educação' ? 'selected' : '' %>>Educação</option>
+                                    <option value="Meio Ambiente" <%= locals.currentCategory === 'Meio Ambiente' ? 'selected' : '' %>>Meio Ambiente</option>
+                                    <option value="Saúde" <%= locals.currentCategory === 'Saúde' ? 'selected' : '' %>>Saúde</option>
+                                    <option value="Social" <%= locals.currentCategory === 'Social' ? 'selected' : '' %>>Social</option>
+                                    <option value="Tecnologia" <%= locals.currentCategory === 'Tecnologia' ? 'selected' : '' %>>Tecnologia</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px; color: var(--emerald-600);"></i>
+                                <select id="sortProjects" onchange="updateFilters()" style="border: none; background: none; font-weight: 600; cursor: pointer; outline: none; font-family: inherit;">
+                                    <option value="latest" <%= locals.currentSort === 'latest' ? 'selected' : '' %>>Recentes</option>
+                                    <option value="likes" <%= locals.currentSort === 'likes' ? 'selected' : '' %>>Populares</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-500);">
+                            <strong><%= posts.length %></strong> resultados
+                        </div>
+                        <script>
+                            function updateFilters() {
+                                const sort = document.getElementById('sortProjects').value;
+                                const category = document.getElementById('filterCategory').value;
+                                window.location.href = `/projetos?sort=${sort}&category=${encodeURIComponent(category)}`;
+                            }
+                        </script>
+                    </div>
+
+                    <!-- Posts List -->
+                    <div class="posts-list">
+                        <% if (locals.posts && posts.length > 0) { %>
+                            <% posts.forEach(function(post, index) { %>
+                                <article class="post-card animate-up" style="--delay: <%= index * 0.1 %>s; animation-delay: var(--delay); cursor: pointer;" onclick="if(!event.target.closest('.post-actions, .comments-preview')) window.location.href='/projeto?id=<%= post.slug %>'">
+                                    <!-- Post Header -->
+                                    <header class="post-header">
+                                        <div class="post-author">
+                                            <img src="<%= post.authorInfo.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(post.authorInfo.name) + '&background=random' %>" alt="<%= post.authorInfo.name %>" class="author-pic">
+                                            <div class="author-info">
+                                                <h4><%= post.authorInfo.name %></h4>
+                                                <p class="post-meta">
+                                                    Há <%= Math.floor((new Date() - post.createdAt) / (1000 * 60 * 60)) %>h • 
+                                                    <%= post.authorInfo.city || 'Brasil' %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button class="btn-more" style="background: none; border: none; color: var(--gray-400); cursor: pointer;"><i data-lucide="more-horizontal"></i></button>
+                                    </header>
+
+                                    <!-- Post Image (if any) -->
+                                    <% if (post.image) { %>
+                                        <div class="post-image-container">
+                                            <img src="<%= post.image %>" alt="<%= post.title %>" class="post-image">
+                                        </div>
+                                    <% } %>
+
+                                    <!-- Post Body -->
+                                    <div class="post-content" style="padding-top: 1rem;">
+                                        <h3 class="post-title" style="margin-bottom: 0.5rem;"><%= post.title %></h3>
+                                        
+                                        <!-- Tag de Categoria -->
+                                        <div class="project-category-tag">
+                                            <i data-lucide="tag"></i> <%= post.category %>
+                                        </div>
+
+                                        <p class="post-description" style="margin-top: 0.75rem;"><%= post.description %></p>
+                                        
+                                        <a href="/projeto?id=<%= post.slug %>" class="btn-read-more">
+                                            Saiba Mais <i data-lucide="arrow-right"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- Post Actions -->
+                                    <div class="post-actions">
+                                        <button class="action-btn btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>">
+                                            <i data-lucide="heart"></i>
+                                            <span>Apoiar (<span class="like-count"><%= post.likes ? post.likes.length : 0 %></span>)</span>
+                                        </button>
+                                        <button class="action-btn" onclick="location.href='/projeto?id=<%= post.slug %>#comentarios'">
+                                            <i data-lucide="message-circle"></i>
+                                            <span>Comentar</span>
+                                        </button>
+                                        <button class="action-btn btn-share-feed" data-id="<%= post._id %>" data-title="<%= post.title %>" data-slug="<%= post.slug %>">
+                                            <i data-lucide="share-2"></i>
+                                            <span>Compartilhar</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Comments Preview (Simulated/Recent) -->
+                                    <% if (post.comments && post.comments.length > 0) { %>
+                                        <div class="comments-preview">
+                                            <div class="comment-item">
+                                            <img src="/assets/hero.png" alt="User" class="comment-pic" style="object-fit: cover;">
+                                                <div class="comment-bubble">
+                                                    <h6><%= post.comments[0].userName %></h6>
+                                                    <p><%= post.comments[0].content %></p>
+                                                </div>
+                                            </div>
+                                            <% if (post.comments.length > 1) { %>
+                                                <p onclick="window.location.href='/projeto?id=<%= post.slug %>#comentarios'" style="font-size: 0.8rem; color: var(--emerald-600); margin-top: 0.5rem; font-weight: 600; cursor: pointer; display: inline-block;">Ver outros <%= post.comments.length - 1 %> comentários...</p>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                </article>
+                            <% }); %>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 5rem 2rem; background: white; border-radius: 12px; border: 1px solid var(--gray-200);">
+                                <i data-lucide="search-x" style="width: 48px; height: 48px; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                <h3>Nenhum projeto encontrado</h3>
+                                <p>Tente ajustar seus filtros para encontrar outras causas.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="feed-sidebar">
+                    <!-- Suggestions Section -->
+                    <section class="sidebar-section">
+                        <div style="color: #0f172a; font-size: 1.1rem; font-weight: 800; margin-bottom: 1.5rem; display: block; border-bottom: 2px solid var(--gray-100); padding-bottom: 0.5rem;">Sugestões para Você</div>
+                        <% if (locals.suggestions && suggestions.length > 0) { %>
+                            <% suggestions.forEach(function(sug) { %>
+                                <div class="suggestion-item">
+                                    <div class="suggestion-user">
+                                        <img src="<%= sug.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(sug.name) + '&background=random' %>" alt="<%= sug.name %>" class="suggestion-pic">
+                                        <div class="suggestion-info">
+                                            <h5><%= sug.name %></h5>
+                                            <p><%= sug.city || 'Maceió' %></p>
+                                        </div>
+                                    </div>
+                                    <a href="<%= sug.isProject ? '/projeto?id=' + sug._id : '/usuario/' + sug._id %>" class="btn btn-outline btn-follow"><%= sug.isProject ? 'Ver' : 'Seguir' %></a>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                    </section>
+
+                    <!-- Events Section -->
+                    <section class="sidebar-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                            <h3 style="margin: 0;">Próximos Eventos</h3>
+                            <a href="/eventos" style="font-size: 0.8rem; font-weight: 600; color: var(--emerald-600); text-decoration: none;">Ver mais</a>
+                        </div>
+                        <% if (locals.events && events.length > 0) { %>
+                            <% events.forEach(function(ev) { %>
+                                <div class="event-item-mini">
+                                    <h5><%= ev.title %></h5>
+                                    <div class="event-mini-meta">
+                                        <span><i data-lucide="calendar" style="width: 12px; height: 12px;"></i> <%= new Date(ev.date).toLocaleDateString('pt-BR') %></span>
+                                        <span><i data-lucide="clock" style="width: 12px; height: 12px;"></i> <%= ev.time %>h</span>
+                                    </div>
+                                    <button class="btn btn-outline btn-notify" data-event-id="<%= ev._id %>">
+                                        <i data-lucide="bell"></i> Avise-me
+                                    </button>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                    </section>
+
+
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL COMPARTILHAR (Global para o Feed) -->
+    <div id="modal-share" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
+        <div class="auth-card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 450px; width: 90%; animation: fadeInUp 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); margin: 0; background: white; border-radius: 12px; padding: 2rem;">
+            <button id="btn-close-share" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+            
+            <div class="auth-header" style="margin-bottom: 1.5rem; text-align: center;">
+                <h2 style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
+                <p id="share-modal-subtitle" style="color: var(--gray-500); margin-top: 0.5rem;">Escolha como espalhar essa iniciativa</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Copiar Link -->
+                <div style="background: var(--gray-50); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--gray-200);">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; margin-bottom: 0.75rem; display: block;">Link do Projeto</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="share-link-input" readonly value="" style="flex: 1; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 0.85rem; background: white; outline: none; width: 100%;">
+                        <button id="btn-copy-link" class="btn btn-primary" style="padding: 0 1.25rem; font-size: 0.85rem; font-weight: 600; white-space: nowrap;">Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Encaminhar para Amigos -->
+                <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; color: var(--navy-900); display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="users" style="width: 18px; height: 18px; color: var(--emerald-500);"></i>
+                        Encaminhar para Amigos
+                    </h4>
+                    <div class="friends-scroll-area" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 4px;">
+                        <% if (locals.user && locals.friendsList && friendsList.length > 0) { %>
+                            <% friendsList.forEach(friend => { %>
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: white; border: 1px solid var(--gray-100); border-radius: 8px; transition: all 0.2s;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; font-weight: 700;">
+                                            <% if (friend.profilePic) { %>
+                                                <img src="<%= friend.profilePic %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <% } else { %>
+                                                <%= friend.name.charAt(0).toUpperCase() %>
+                                            <% } %>
+                                        </div>
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--navy-900);"><%= friend.name %></span>
+                                    </div>
+                                    <button class="btn btn-outline btn-forward-project" data-friend-id="<%= friend._id %>" style="padding: 0.5rem 0.75rem; font-size: 0.75rem; border-radius: 100px;">Encaminhar</button>
+                                </div>
+                            <% }) %>
+                        <% } else if (!locals.user) { %>
+                            <div style="text-align: center; padding: 1.5rem; background: var(--gray-50); border-radius: 12px; border: 1px dashed var(--gray-200);">
+                                <p style="font-size: 0.85rem; color: var(--gray-500);">Faça <a href="/login" style="color: var(--emerald-600); font-weight: 600;">login</a> para compartilhar.</p>
+                            </div>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 1.5rem; background: var(--gray-50); border-radius: 12px; border: 1px dashed var(--gray-200);">
+                                <p style="font-size: 0.85rem; color: var(--gray-500);">Você ainda não tem amigos adicionados.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modal-share');
+            const btnClose = document.getElementById('btn-close-share');
+            const linkInput = document.getElementById('share-link-input');
+            const btnCopy = document.getElementById('btn-copy-link');
+            const subtitle = document.getElementById('share-modal-subtitle');
+
+            let currentProjectSlug = '';
+            let currentProjectTitle = '';
+
+            // Abrir modal ao clicar em compartilhar no feed
+            document.querySelectorAll('.btn-share-feed').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    currentProjectSlug = btn.getAttribute('data-slug');
+                    currentProjectTitle = btn.getAttribute('data-title');
+                    
+                    const fullLink = `${window.location.origin}/projeto?id=${currentProjectSlug}`;
+                    linkInput.value = fullLink;
+                    subtitle.innerText = `Compartilhar: ${currentProjectTitle}`;
+                    
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+
+            if (btnClose) btnClose.addEventListener('click', closeModal);
+            window.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+            // Copiar Link
+            btnCopy.addEventListener('click', () => {
+                linkInput.select();
+                document.execCommand('copy');
+                btnCopy.innerText = 'Copiado!';
+                setTimeout(() => {
+                    btnCopy.innerText = 'Copiar';
+                }, 2000);
+            });
+
+            // Encaminhar para Amigos
+            document.querySelectorAll('.btn-forward-project').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const friendId = btn.getAttribute('data-friend-id');
+                    const content = `Olá! Veja este projeto incrível no Impacta Mais: *${currentProjectTitle}*\nLink: ${window.location.origin}/projeto?id=${currentProjectSlug}`;
+
+                    btn.disabled = true;
+                    btn.innerText = 'Enviando...';
+
+                    try {
+                        const response = await fetch('/mensagens/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ receiverId: friendId, content })
+                        });
+
+                        if (response.ok) {
+                            btn.innerText = 'Enviado!';
+                            btn.style.background = 'var(--emerald-50)';
+                            btn.style.color = 'var(--emerald-600)';
+                        } else {
+                            btn.disabled = false;
+                            btn.innerText = 'Erro';
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        btn.disabled = false;
+                        btn.innerText = 'Erro';
+                    }
+                });
+            });
+
+            // Botão Avise-me (Sidebar) - Agora também registra no evento
+            document.querySelectorAll('.btn-notify').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const eventId = btn.getAttribute('data-event-id');
+                    
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" style="width: 14px; height: 14px;"></i>...';
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                    try {
+                        const response = await fetch('/evento/inscrever', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `eventId=${eventId}`
+                        });
+
+                        // Se redirecionar para o login, o fetch segue o redirect. 
+                        // Verificamos a URL final para saber se caiu no login.
+                        if (response.url.includes('/login')) {
+                            window.location.href = '/login';
+                            return;
+                        }
+
+                        btn.innerHTML = '<i data-lucide="check" style="width: 14px; height: 14px;"></i> Inscrito';
+                        btn.style.background = 'var(--emerald-500)';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = 'var(--emerald-500)';
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    } catch (error) {
+                        console.error('Erro ao inscrever:', error);
+                        btn.innerHTML = '<i data-lucide="bell"></i> Avise-me';
+                        btn.disabled = false;
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,359 @@
+/* Social Feed Layout */
+.feed-container {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    padding-top: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .feed-container {
+        grid-template-columns: 1fr; /* Coluna única em telas menores */
+        gap: 1.5rem;
+    }
+    
+    .feed-sidebar {
+        order: 2; /* Sidebar vai para baixo do feed */
+    }
+
+    .main-feed {
+        order: 1;
+    }
+}
+
+@media (max-width: 640px) {
+    .feed-container {
+        padding-top: 1rem;
+    }
+
+    .post-card {
+        border-radius: 0; /* Cards sem borda arredondada no mobile (estilo Instagram) */
+        border-left: none;
+        border-right: none;
+        margin-bottom: 1rem;
+    }
+
+    .post-actions {
+        flex-wrap: wrap; /* Permite que os botões quebrem linha se necessário */
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .action-btn {
+        flex: 1; /* Botões ocupam espaço igual */
+        justify-content: center;
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .action-btn span {
+        display: none; /* Esconde o texto no mobile muito pequeno se necessário, ou mantém */
+    }
+
+    /* Mostrar texto apenas se houver espaço (opcional, vamos manter por enquanto com flex-wrap) */
+}
+
+@media (max-width: 400px) {
+    .action-btn span {
+        display: none; /* Esconde texto em telas MUITO pequenas para focar nos ícones */
+    }
+}
+
+/* Post Card Styles */
+.post-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.post-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.author-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--gray-100);
+}
+
+.author-info h4 {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--navy-900);
+}
+
+.post-meta {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+.post-content {
+    padding: 0 1rem 1rem;
+}
+
+.post-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--navy-900);
+}
+
+.post-description {
+    font-size: 0.95rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.post-image-container {
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    background: var(--gray-50);
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.post-actions {
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid var(--gray-100);
+    background: white;
+}
+
+.action-btn {
+    background: white;
+    border: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--navy-800);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.6rem 1.25rem;
+    border-radius: 100px; /* Mais arredondado e premium */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2px;
+}
+
+.action-btn:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.action-btn.active {
+    color: #ef4444;
+    border-color: #fee2e2;
+    background: #fef2f2;
+}
+
+.action-btn.active i {
+    fill: #ef4444;
+}
+
+/* Sidebar Styles */
+.sidebar-section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+    color: var(--navy-900);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.suggestion-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.suggestion-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.suggestion-info h5 {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.suggestion-info p {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+.btn-follow {
+    font-size: 0.85rem;
+    padding: 0.4rem 1rem;
+}
+
+/* Event Item in Sidebar */
+.event-item-mini {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.event-item-mini:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.event-item-mini h5 {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+
+.event-mini-meta {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.btn-notify {
+    margin-top: 0.75rem;
+    width: 100%;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Project Category Tag */
+.project-category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f0f7ff;
+    color: #12678D;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.project-category-tag i {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5px;
+}
+
+/* Saiba Mais Button */
+.btn-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #12678D;
+    border: 1.5px solid #12678D;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-read-more i {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+}
+
+.btn-read-more:hover {
+    background: #12678D;
+    color: white;
+    transform: translateX(3px);
+}
+
+.btn-read-more:hover i {
+    transform: translateX(3px);
+}
+
+/* Comments Preview */
+.comments-preview {
+    padding: 0 1rem 1rem;
+}
+
+.comment-item {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.comment-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.comment-bubble {
+    background: var(--gray-50);
+    padding: 0.75rem;
+    border-radius: 12px;
+    flex: 1;
+}
+
+.comment-bubble h6 {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.comment-bubble p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: var(--gray-700);
+}

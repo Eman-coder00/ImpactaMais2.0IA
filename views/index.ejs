@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Início' }) %>
+<body>
+    <%- include('partials/splash') %>
+    <%- include('partials/navbar') %>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="container hero-content animate-up">
+                <h1>Conectando Propósitos, <br> Ampliando Impactos</h1>
+                <p>Transformamos boas intenções em ações reais. Conheça projetos que estão mudando o mundo e descubra como você pode contribuir.</p>
+                <div class="hero-btns">
+                    <a href="#projetos" class="btn btn-primary">Explorar Projetos</a>
+                    <a href="#eventos" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.3);">Ver Agenda</a>
+                </div>
+            </div>
+            
+            <!-- Wave Divider -->
+            <div class="hero-wave">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path fill="#ffffff" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Featured Projects (Highlights) -->
+        <section id="projetos" class="section-padding">
+            <div class="container">
+                <div class="section-title animate-up" style="display: flex; justify-content: space-between; align-items: flex-end; text-align: left; margin-bottom: 4rem; flex-wrap: wrap; gap: 2rem;">
+                    <div style="max-width: 600px;">
+                        <h2>Projetos em Destaque</h2>
+                        <p>Conheça algumas das iniciativas mais impactantes da nossa comunidade.</p>
+                    </div>
+                    <a href="/projetos" class="btn btn-outline">Ver Todos os Projetos <i data-lucide="arrow-right" style="width: 18px; height: 18px; vertical-align: middle; margin-left: 0.5rem;"></i></a>
+                </div>
+                
+                <div class="projects-grid">
+                    <% if (locals.posts && Array.isArray(posts) && posts.length > 0) { %>
+                        <% posts.forEach(function(post, index) { %>
+                            <div class="project-card animate-up" onclick="if(!event.target.closest('.btn-like-ajax')) window.location.href='/projeto?id=<%= post.slug %>'" style="--delay: <%= (index + 1) * 0.1 %>s; animation-delay: var(--delay); cursor: pointer;">
+                                <div class="project-img" style="background-image: url('<%= post.image %>');"></div>
+                                <div class="project-info">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <span class="project-tag"><%= post.category %></span>
+                                        <div class="like-container">
+                                            <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
+                                                <i data-lucide="heart" class="heart-icon"></i>
+                                                <span class="like-count"><%= post.likes ? post.likes.length : 0 %></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <h3><%= post.title %></h3>
+                                    <p><%= post.description %></p>
+                                    <a href="/projeto?id=<%= post.slug %>" class="btn btn-outline" style="width: 100%;">Saiba Mais</a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p style="grid-column: 1/-1; text-align: center; opacity: 0.7;">Nenhum projeto encontrado no momento.</p>
+                    <% } %>
+                </div>
+
+                <div style="text-align: center; margin-top: 4rem;" class="animate-up">
+                    <a href="/projetos" class="btn btn-primary btn-lg">Explorar Todas as Causas</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="eventos" class="events-section section-padding">
+            <div class="container">
+                <div class="section-title animate-up">
+                    <h2>Próximos Eventos</h2>
+                    <p>Participe das nossas atividades presenciais e online. O impacto começa com a sua presença.</p>
+                </div>
+
+                <div class="events-timeline">
+                    <% if (locals.events && events.length > 0) { %>
+                        <% events.forEach(function(event, index) { %>
+                            <div class="event-card animate-up" style="--delay: <%= index * 0.1 %>s; animation-delay: var(--delay);">
+                                <div class="event-date">
+                                    <% 
+                                        const dateParts = event.date ? event.date.split('-') : ['00', '00', '00'];
+                                        const day = dateParts[2] || '00';
+                                        const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                                        const month = months[parseInt(dateParts[1]) - 1] || '???';
+                                    %>
+                                    <span class="day text-navy-900"><%= day %></span>
+                                    <span class="month text-navy-600"><%= month %></span>
+                                </div>
+                                <div class="event-details">
+                                    <h3><%= event.title %></h3>
+                                    <div class="event-meta">
+                                        <span><i data-lucide="map-pin" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <%= event.location %></span>
+                                        <span><i data-lucide="clock" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <%= event.time %></span>
+                                        <span style="color: var(--emerald-600); font-weight: 600;"><i data-lucide="users" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <%= event.participants ? event.participants.length : 0 %></span>
+                                    </div>
+                                </div>
+                                <a href="/evento?id=<%= event._id %>" class="btn btn-primary">Ver Detalhes</a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p style="text-align: center; opacity: 0.7; grid-column: 1/-1;">Fique ligado! Novos eventos em breve.</p>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

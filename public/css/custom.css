@@ -1,0 +1,435 @@
+/* Global Fixes for Mobile Responsiveness */
+* {
+    box-sizing: border-box !important;
+}
+
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative;
+    scrollbar-gutter: auto !important; /* Evita a linha branca de reserva da barra */
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+}
+
+/* Custom Scrollbar Global */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+#main-content, main {
+    flex: 1 0 auto !important;
+    width: 100% !important;
+}
+
+body {
+    border: none !important;
+}
+
+.container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+    box-sizing: border-box !important;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.hero-content {
+    max-width: 850px !important;
+}
+
+.project-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* Modal Share Responsiveness */
+.share-link-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.friends-scroll-area {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.friends-scroll-area::-webkit-scrollbar {
+    width: 8px;
+    display: block !important;
+}
+
+.friends-scroll-area::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 10px;
+}
+
+.friends-scroll-area::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 10px;
+    border: 2px solid var(--gray-100);
+}
+
+.friends-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+@media (max-width: 480px) {
+    .share-link-group {
+        flex-direction: column;
+    }
+    
+    .share-link-group button {
+        width: 100%;
+    }
+    
+    #modal-share .auth-card {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+/* Premium Auth Styles (Matching Request Design) */
+.auth-page {
+    background-color: #f3f4f6 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex: 1 !important; /* Deixa o footer aparecer no final */
+    padding: 2rem !important;
+}
+
+.auth-card {
+    background: white !important;
+    padding: 3rem !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    border: none !important;
+}
+
+.auth-header .logo {
+    display: none !important; /* Esconder logo no card para focar no título do form */
+}
+
+.auth-header h2 {
+    font-size: 1.85rem !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    margin-bottom: 2rem !important;
+    text-align: left !important;
+}
+
+.auth-header p {
+    display: none !important; /* Simplificar como na imagem */
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.5rem !important;
+}
+
+.auth-form .form-group label {
+    display: block !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    margin-bottom: 0.6rem !important;
+    font-size: 1rem !important;
+}
+
+.auth-form .form-group input {
+    width: 100% !important;
+    padding: 0.85rem 1.15rem !important;
+    border: 1.5px solid #333 !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    background: white !important;
+    color: #000 !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.auth-form .form-group input::placeholder {
+    color: #94a3b8 !important;
+}
+
+.auth-form .form-group input:focus {
+    outline: none !important;
+    border-color: #12678D !important;
+    box-shadow: 0 0 0 4px rgba(18, 103, 141, 0.1) !important;
+}
+
+.auth-form .btn-primary {
+    background-color: #12678D !important;
+    color: white !important;
+    padding: 1.15rem !important;
+    border-radius: 100px !important;
+    font-weight: 800 !important;
+    font-size: 1.15rem !important;
+    border: none !important;
+    cursor: pointer !important;
+    margin-top: 1.5rem !important;
+    width: 100% !important;
+    transition: all 0.2s ease !important;
+}
+
+.auth-form .btn-primary:hover {
+    background-color: #0e5270 !important;
+    transform: translateY(-2px) !important;
+}
+
+.auth-footer {
+    margin-top: 2rem !important;
+    text-align: center !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+}
+
+.auth-footer a {
+    color: #12678D !important;
+    text-decoration: none !important;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline !important;
+}
+
+/* Custom Checkbox */
+.form-checkbox {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    margin: 1.5rem 0 !important;
+    cursor: pointer !important;
+}
+
+.form-checkbox input {
+    width: 20px !important;
+    height: 20px !important;
+    accent-color: #12678D !important;
+    cursor: pointer !important;
+}
+
+.form-checkbox span {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #334155 !important;
+}
+
+/* Responsividade para Formulários de Autenticação */
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 1rem !important;
+    }
+
+    .auth-card {
+        padding: 2rem 1.5rem !important;
+        border-radius: 16px !important;
+    }
+
+    .auth-header h2 {
+        font-size: 1.6rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .auth-form .btn-primary {
+        padding: 1rem !important;
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Ajustes Finos de Responsividade Navbar e Global */
+@media (max-width: 768px) {
+    .nav-search {
+        display: none !important; /* Esconder busca padrão no mobile */
+    }
+
+    .nav-content {
+        padding: 0 0.75rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .logo {
+        font-size: 1.2rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    .nav-auth {
+        display: none !important; /* Usar menu mobile */
+    }
+
+    .notifications-wrapper {
+        margin-right: 0.5rem !important;
+    }
+
+    /* Garantir que o container do feed não quebre */
+    .feed-container {
+        width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Ajuste para garantir simetria total e centralização no mobile */
+    .container {
+        padding: 0 1rem !important; /* Este é o gap lateral único e uniforme */
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .feed-container {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .main-feed, .feed-sidebar {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .post-card, .sidebar-section {
+        width: 100% !important; /* Ocupa o 100% do container (que já tem o gap) */
+        margin: 0 0 1.5rem 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Ajuste para a barra de filtros não transbordar */
+    .filter-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+        padding: 1.25rem !important;
+    }
+
+    .filter-bar > div {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    .filter-bar select {
+        width: 100% !important;
+        padding: 0.5rem 0 !important;
+    }
+}
+
+/* Ajustes do Footer para manter a estrutura mas respeitar a cor original */
+footer {
+    border-top: none !important;
+    padding: 5rem 0 3rem !important;
+    margin-top: 0 !important;
+}
+
+.footer-content {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1.5fr !important;
+    gap: 4rem !important;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin-top: 3rem !important;
+    padding-top: 2rem !important;
+    text-align: center !important;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        text-align: center !important;
+    }
+    
+    .footer-info, .footer-links, .newsletter {
+        align-items: center !important;
+    }
+}
+
+/* Perfil Page Specific Fixes */
+.profile-secondary-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.5rem !important;
+}
+
+.profile-card-mini {
+    background: white !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 1.5rem !important;
+    min-width: 0 !important; /* Permite que o texto dentro dele quebre corretamente */
+    overflow: hidden !important;
+}
+
+@media (max-width: 768px) {
+    .profile-secondary-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Navbar Profile Pic */
+.nav-profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.user-welcome:hover .nav-profile-pic {
+    transform: scale(1.1);
+}
+
+/* Navbar Auth Alignment Fix */
+.nav-auth {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    white-space: nowrap !important;
+}
+
+.user-welcome {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    text-decoration: none !important;
+}
+
+/* Forçar que nada saia da tela */
+html, body {
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+}

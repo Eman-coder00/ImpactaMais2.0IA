@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Política de Privacidade' }) %>
+<body style="background: var(--gray-50);">
+    <%- include('partials/navbar') %>
+
+    <main id="main-content" style="padding-top: 100px; padding-bottom: 80px;">
+        <div class="container" style="max-width: 800px; background: white; padding: 4rem; border-radius: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-100);">
+            
+            <header style="margin-bottom: 3rem; text-align: center;">
+                <div style="width: 64px; height: 64px; background: var(--emerald-50); color: var(--emerald-600); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
+                </div>
+                <h1 style="font-size: 2.5rem; color: var(--navy-900); margin-bottom: 1rem;">Política de Privacidade</h1>
+                <p style="color: var(--gray-500); font-size: 1.1rem;">Última atualização: <%= new Date().toLocaleDateString('pt-BR') %></p>
+            </header>
+
+            <div class="policy-content" style="color: var(--gray-600); line-height: 1.8; font-size: 1.05rem;">
+                <section style="margin-bottom: 2.5rem;">
+                    <h2 style="color: var(--navy-900); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 8px; height: 24px; background: var(--emerald-500); border-radius: 4px; display: inline-block;"></span>
+                        1. Introdução
+                    </h2>
+                    <p>Bem-vindo ao <strong>Impacta Mais</strong>. A sua privacidade é de extrema importância para nós. Esta política detalha como coletamos, usamos e protegemos suas informações pessoais ao utilizar nossa plataforma de conexão social e projetos de impacto.</p>
+                </section>
+
+                <section style="margin-bottom: 2.5rem;">
+                    <h2 style="color: var(--navy-900); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 8px; height: 24px; background: var(--emerald-500); border-radius: 4px; display: inline-block;"></span>
+                        2. Coleta de Dados
+                    </h2>
+                    <p>Coletamos informações básicas necessárias para o funcionamento da rede, tais como:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; list-style-type: circle;">
+                        <li>Nome e e-mail para identificação e comunicação.</li>
+                        <li>Informações de perfil (biografia, foto) que você optar por compartilhar.</li>
+                        <li>Conteúdo de projetos e eventos criados por você.</li>
+                        <li>Mensagens trocadas através do nosso sistema de chat interno.</li>
+                    </ul>
+                </section>
+
+                <section style="margin-bottom: 2.5rem;">
+                    <h2 style="color: var(--navy-900); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 8px; height: 24px; background: var(--emerald-500); border-radius: 4px; display: inline-block;"></span>
+                        3. Uso das Informações
+                    </h2>
+                    <p>Os dados coletados são utilizados exclusivamente para:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem; list-style-type: circle;">
+                        <li>Facilitar a conexão entre usuários e projetos.</li>
+                        <li>Enviar notificações sobre interações, amizades e eventos.</li>
+                        <li>Melhorar a experiência do usuário na plataforma.</li>
+                        <li>Garantir a segurança e integridade da comunidade.</li>
+                    </ul>
+                </section>
+
+                <section style="margin-bottom: 2.5rem;">
+                    <h2 style="color: var(--navy-900); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 8px; height: 24px; background: var(--emerald-500); border-radius: 4px; display: inline-block;"></span>
+                        4. Segurança
+                    </h2>
+                    <p>Implementamos medidas de segurança técnicas e organizacionais para proteger seus dados contra acesso não autorizado, alteração, divulgação ou destruição. Suas senhas são criptografadas utilizando tecnologia de ponta (bcrypt).</p>
+                </section>
+
+                <section style="margin-bottom: 2.5rem;">
+                    <h2 style="color: var(--navy-900); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="width: 8px; height: 24px; background: var(--emerald-500); border-radius: 4px; display: inline-block;"></span>
+                        5. Seus Direitos
+                    </h2>
+                    <p>Você tem o direito de acessar, corrigir ou excluir suas informações pessoais a qualquer momento através das configurações de perfil ou entrando em contato com nossa equipe de suporte.</p>
+                </section>
+
+                <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--gray-100); text-align: center;">
+                    <p style="margin-bottom: 1.5rem;">Ao continuar utilizando o Impacta Mais, você concorda com estes termos.</p>
+                    <a href="/cadastro" class="btn btn-primary" style="padding: 1rem 2rem;">Voltar para o Cadastro</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
