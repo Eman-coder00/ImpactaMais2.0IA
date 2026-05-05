@@ -43,13 +43,7 @@
                                 <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; border: 2px solid white;"><%= unreadCount %></span>
                             <% } %>
                         </a>
-                        <button id="btn-notifications-mobile" class="btn btn-outline" style="width: 100%; border-color: var(--navy-900); color: var(--navy-900); position: relative; justify-content: center; background: none;" onclick="if(window.toggleNotifications) window.toggleNotifications(event)">
-                            <i data-lucide="bell" style="width: 18px; height: 18px; margin-right: 8px;"></i>
-                            Notificações
-                            <% if (locals.unreadCount > 0) { %>
-                                <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; border: 2px solid white;"><%= unreadCount %></span>
-                            <% } %>
-                        </button>
+
                         <a href="/perfil" class="btn btn-primary" style="width: 100%;">Meu Perfil</a>
                         <a href="/logout" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair da Conta</a>
                     </div>
@@ -417,12 +411,12 @@
                 };
 
                 const btnNotif = document.getElementById('btn-notifications');
-                const btnNotifMobile = document.getElementById('btn-notifications-mobile');
+
                 const btnNotifNavbarMobile = document.getElementById('btn-notifications-navbar-mobile');
 
                 // Registro dos cliques nos botões
                 if (btnNotif) btnNotif.addEventListener('click', window.toggleNotifications);
-                if (btnNotifMobile) btnNotifMobile.addEventListener('click', window.toggleNotifications);
+
                 if (btnNotifNavbarMobile) btnNotifNavbarMobile.addEventListener('click', window.toggleNotifications);
 
                 // Mobile Menu Toggle
@@ -448,7 +442,7 @@
                     const d = document.getElementById('notifications-dropdown');
                     if (d && !d.hidden) {
                         const clickedOnBtn = e.target.closest('#btn-notifications') || 
-                                           e.target.closest('#btn-notifications-mobile') ||
+
                                            e.target.closest('#btn-notifications-navbar-mobile');
                         
                         if (!d.contains(e.target) && !clickedOnBtn) {
@@ -517,14 +511,28 @@
                      <% } %>>
                     <p>
                         <% if (n.type === 'friend_request') { %>
-                            <strong><%= n.fromName %></strong> enviou uma solicitação de amizade.
+                            <% 
+                                const isPending = user.friendRequests && user.friendRequests.some(r => r.fromId.toString() === n.fromId.toString());
+                                const isFriend = user.friends && user.friends.some(fId => fId.toString() === n.fromId.toString());
+                            %>
+                            <% if (isPending) { %>
+                                <strong><%= n.fromName %></strong> enviou uma solicitação de amizade.
+                            <% } else if (isFriend) { %>
+                                Você aceitou o pedido de amizade de <strong><%= n.fromName %></strong>.
+                            <% } else { %>
+                                Você recusou o pedido de amizade de <strong><%= n.fromName %></strong>.
+                            <% } %>
+                        <% } else if (n.type === 'friend_request_accepted') { %>
+                            Você aceitou o pedido de amizade de <strong><%= n.fromName %></strong>.
+                        <% } else if (n.type === 'friend_request_declined') { %>
+                            Você recusou o pedido de amizade de <strong><%= n.fromName %></strong>.
                         <% } else if (n.type === 'request_accepted') { %>
                             <strong><%= n.fromName %></strong> aceitou sua solicitação.
                         <% } else if (n.type === 'new_message') { %>
                             <strong><%= n.fromName %></strong>: "<%= n.content %>"
                         <% } %>
                     </p>
-                    <% if (n.type === 'friend_request') { %>
+                    <% if (n.type === 'friend_request' && user.friendRequests && user.friendRequests.some(r => r.fromId.toString() === n.fromId.toString())) { %>
                         <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
                             <form action="/amizade/respond" method="POST" style="margin: 0;">
                                 <input type="hidden" name="fromId" value="<%= n.fromId %>">

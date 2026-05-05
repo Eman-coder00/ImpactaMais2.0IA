@@ -684,10 +684,15 @@ async function startServer() {
                     { $pull: { friendRequests: { fromId: senderId } } }
                 );
 
-                // Marca a notificação correspondente como lida
+                // Marca a notificação correspondente como lida e altera o tipo para refletir a ação
                 await db.collection('users').updateOne(
                     { _id: myId, "notifications.type": "friend_request", "notifications.fromId": senderId },
-                    { $set: { "notifications.$.read": true } }
+                    { 
+                        $set: { 
+                            "notifications.$.read": true,
+                            "notifications.$.type": action === 'accept' ? 'friend_request_accepted' : 'friend_request_declined'
+                        } 
+                    }
                 );
 
                 res.redirect(req.get('Referrer') || '/');
