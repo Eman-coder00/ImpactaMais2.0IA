@@ -65,6 +65,57 @@ async function startServer() {
                     const userDoc = await db.collection('users').findOne({ _id: new ObjectId(req.session.user.id) });
                     if (userDoc) {
                         res.locals.user = userDoc;
+                        
+                        // --- LÓGICA DE LEMBRETE DE EVENTOS ---
+                        // Verifica se hoje há algum evento que o usuário se inscreveu
+                        const today = new Date().toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+                        
+                        // Executa apenas uma vez por sessão diária para otimizar
+                        if (req.session.lastEventCheck !== today) {
+                            const eventIds = userDoc.eventsJoined || [];
+                            if (eventIds.length > 0) {
+                                try {
+                                    const todayEvents = await db.collection('events').find({
+                                        _id: { $in: eventIds.map(id => new ObjectId(id)) },
+                                        date: today
+                                    }).toArray();
+
+                                    for (const event of todayEvents) {
+                                        // Verifica se já existe um lembrete para este evento hoje nas notificações
+                                        const alreadyNotified = userDoc.notifications?.some(n => 
+                                            n.type === 'event_reminder' && 
+                                            n.eventId?.toString() === event._id.toString() &&
+                                            new Date(n.date).toLocaleDateString('en-CA') === today
+                                        );
+
+                                        if (!alreadyNotified) {
+                                            const reminder = {
+                                                id: new ObjectId(),
+                                                type: 'event_reminder',
+                                                eventId: event._id,
+                                                eventTitle: event.title,
+                                                date: new Date(),
+                                                read: false
+                                            };
+                                            
+                                            await db.collection('users').updateOne(
+                                                { _id: userDoc._id },
+                                                { $push: { notifications: reminder } }
+                                            );
+                                            
+                                            // Atualiza a lista local para refletir na resposta imediata
+                                            if (!userDoc.notifications) userDoc.notifications = [];
+                                            userDoc.notifications.push(reminder);
+                                        }
+                                    }
+                                } catch (err) {
+                                    console.error('[EVENT_REMINDER] Erro:', err);
+                                }
+                            }
+                            req.session.lastEventCheck = today;
+                        }
+                        // --- FIM DA LÓGICA DE LEMBRETE ---
+
                         res.locals.notifications = userDoc.notifications?.reverse() || [];
                         res.locals.unreadCount = res.locals.notifications.filter(n => !n.read).length;
                     }
@@ -93,7 +144,9 @@ async function startServer() {
 
         app.get('/', async (req, res) => {
             try {
-                // Na home, mostramos apenas os 3 projetos mais curtidos ou recentes como destaque
+                const today = new Date().toLocaleDateString('en-CA');
+                const currentTime = new Date().toLocaleTimeString('pt-BR', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+
                 const featuredProjects = await db.collection('posts').aggregate([
                     {
                         $addFields: {
@@ -104,11 +157,17 @@ async function startServer() {
                     { $limit: 3 }
                 ]).toArray();
 
-                const events = await db.collection('events').find().sort({ createdAt: -1 }).limit(3).toArray();
+                // Mostramos apenas 3 eventos que ainda não ocorreram, ordenados por data próxima
+                const upcomingEvents = await db.collection('events').find({
+                    $or: [
+                        { date: { $gt: today } },
+                        { date: today, time: { $gte: currentTime } }
+                    ]
+                }).sort({ date: 1, time: 1 }).limit(3).toArray();
                 
                 res.render('index', { 
                     posts: featuredProjects, 
-                    events
+                    events: upcomingEvents
                 });
             } catch (error) {
                 console.error('Erro ao carregar home:', error);
@@ -150,6 +209,9 @@ async function startServer() {
 
                 const posts = await db.collection('posts').aggregate(pipeline).toArray();
 
+                const today = new Date().toLocaleDateString('en-CA');
+                const currentTime = new Date().toLocaleTimeString('pt-BR', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
+
                 // Sugestões para a Sidebar (usuários aleatórios ou relevantes)
                 let suggestions = await db.collection('users').find({
                     _id: { $ne: req.session.user ? new ObjectId(req.session.user.id) : null }
@@ -171,8 +233,13 @@ async function startServer() {
                     suggestions = [...suggestions, ...projectSuggestions];
                 }
 
-                // Próximos eventos para a Sidebar
-                const events = await db.collection('events').find().sort({ date: 1 }).limit(5).toArray();
+                // Próximos eventos para a Sidebar - apenas os que ainda não passaram
+                const upcomingEventsSidebar = await db.collection('events').find({
+                    $or: [
+                        { date: { $gt: today } },
+                        { date: today, time: { $gte: currentTime } }
+                    ]
+                }).sort({ date: 1, time: 1 }).limit(5).toArray();
 
                 // Buscar lista de amigos para o modal de compartilhamento
                 let friendsList = [];
@@ -188,7 +255,7 @@ async function startServer() {
                 res.render('projetos', { 
                     posts, 
                     suggestions,
-                    events,
+                    events: upcomingEventsSidebar,
                     friendsList,
                     currentSort: sort,
                     currentCategory: category
@@ -202,8 +269,31 @@ async function startServer() {
         app.get('/login', (req, res) => res.render('login', { error: null }));
         app.get('/cadastro', (req, res) => res.render('cadastro', { error: null }));
         app.get('/eventos', async (req, res) => {
-            const events = await db.collection('events').find().toArray();
-            res.render('eventos', { events });
+            try {
+                const allEvents = await db.collection('events').find().toArray();
+                const now = new Date();
+
+                const upcomingEvents = [];
+                const pastEvents = [];
+
+                allEvents.forEach(event => {
+                    const eventDateTime = new Date(`${event.date}T${event.time || '00:00'}:00`);
+                    if (now > eventDateTime) {
+                        pastEvents.push(event);
+                    } else {
+                        upcomingEvents.push(event);
+                    }
+                });
+
+                // Ordenação: Futuros mais próximos primeiro, Passados mais recentes primeiro
+                upcomingEvents.sort((a, b) => new Date(`${a.date}T${a.time}:00`) - new Date(`${b.date}T${b.time}:00`));
+                pastEvents.sort((a, b) => new Date(`${b.date}T${b.time}:00`) - new Date(`${a.date}T${a.time}:00`));
+
+                res.render('eventos', { upcomingEvents, pastEvents });
+            } catch (error) {
+                console.error('Erro ao buscar eventos:', error);
+                res.render('eventos', { upcomingEvents: [], pastEvents: [] });
+            }
         });
 
         app.get('/perfil', async (req, res) => {
@@ -247,8 +337,21 @@ async function startServer() {
 
             // Próximos eventos para a Sidebar
             const events = await db.collection('events').find().sort({ date: 1 }).limit(5).toArray();
+
+            // Lógica de Medalhas
+            const projectsCount = myProjects.length;
+            const badges = [];
+            if (projectsCount >= 5) {
+                badges.push({ name: 'Elo Inicial', img: '/assets/badges/bronze.png', desc: 'Conquistada ao publicar 5 projetos sociais.' });
+            }
+            if (projectsCount >= 10) {
+                badges.push({ name: 'Nó de Impacto', img: '/assets/badges/silver.png', desc: 'Conquistada ao publicar 10 projetos sociais.' });
+            }
+            if (projectsCount >= 20) {
+                badges.push({ name: 'Arquiteto Social', img: '/assets/badges/gold.png', desc: 'Nível máximo! Conquistada ao publicar 20 projetos sociais.' });
+            }
             
-            res.render('perfil', { user: userDoc, joinedEvents, myProjects, myEvents, friendsList, suggestions, events });
+            res.render('perfil', { user: userDoc, joinedEvents, myProjects, myEvents, friendsList, suggestions, events, badges });
         });
 
         app.get('/usuario/:id', async (req, res) => {
@@ -304,7 +407,20 @@ async function startServer() {
                 // Próximos eventos para a Sidebar
                 const events = await db.collection('events').find().sort({ date: 1 }).limit(5).toArray();
 
-                res.render('usuario-perfil', { targetUser, myProjects, joinedEvents, friendshipStatus, suggestions, events });
+                // Lógica de Medalhas
+                const projectsCount = myProjects.length;
+                const badges = [];
+                if (projectsCount >= 5) {
+                    badges.push({ name: 'Elo Inicial', img: '/assets/badges/bronze.png', desc: 'Conquistada ao publicar 5 projetos sociais.' });
+                }
+                if (projectsCount >= 10) {
+                    badges.push({ name: 'Nó de Impacto', img: '/assets/badges/silver.png', desc: 'Conquistada ao publicar 10 projetos sociais.' });
+                }
+                if (projectsCount >= 20) {
+                    badges.push({ name: 'Arquiteto Social', img: '/assets/badges/gold.png', desc: 'Nível máximo! Conquistada ao publicar 20 projetos sociais.' });
+                }
+
+                res.render('usuario-perfil', { targetUser, myProjects, joinedEvents, friendshipStatus, suggestions, events, badges });
             } catch (error) {
                 console.error('Erro ao carregar perfil público:', error);
                 res.redirect('/');
@@ -333,7 +449,12 @@ async function startServer() {
                 // Contagem de participantes
                 const participantsCount = event.participants ? event.participants.length : 0;
                 
-                res.render('evento-detalhe', { event, isParticipating, participantsCount, author });
+                // Verificar se o evento já passou
+                const now = new Date();
+                const eventDateTime = new Date(`${event.date}T${event.time || '00:00'}:00`);
+                const hasPassed = now > eventDateTime;
+                
+                res.render('evento-detalhe', { event, isParticipating, participantsCount, author, hasPassed });
             } catch (error) {
                 res.redirect('/eventos');
             }
