@@ -454,11 +454,97 @@ async function startServer() {
                 const eventDateTime = new Date(`${event.date}T${event.time || '00:00'}:00`);
                 const hasPassed = now > eventDateTime;
                 
-                res.render('evento-detalhe', { event, isParticipating, participantsCount, author, hasPassed });
+                // Gerar link do Google Agenda se estiver participando e o evento não passou
+                let googleCalendarUrl = null;
+                if (isParticipating && !hasPassed) {
+                    try {
+                        const cleanDate = event.date.replace(/-/g, '');
+                        const cleanTime = (event.time || '00:00').replace(/:/g, '');
+                        const start = `${cleanDate}T${cleanTime}00`;
+                        
+                        // Definir 2 horas de duração por padrão
+                        const startDt = new Date(`${event.date}T${event.time || '00:00'}:00`);
+                        const endDt = new Date(startDt.getTime() + 2 * 60 * 60 * 1000);
+                        const end = endDt.getFullYear().toString() + 
+                                    (endDt.getMonth() + 1).toString().padStart(2, '0') + 
+                                    endDt.getDate().toString().padStart(2, '0') + 'T' + 
+                                    endDt.getHours().toString().padStart(2, '0') + 
+                                    endDt.getMinutes().toString().padStart(2, '0') + '00';
+
+                        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&dates=${start}/${end}`;
+
+                        // Gerar link do Outlook
+                        const startISO = `${event.date}T${event.time || '00:00'}:00`;
+                        const endDtISO = new Date(startDt.getTime() + 2 * 60 * 60 * 1000);
+                        const endISO = endDtISO.toISOString().split('.')[0]; // Formato YYYY-MM-DDTHH:mm:ss (UTC aqui, mas Outlook costuma aceitar)
+                        
+                        const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&startdt=${startISO}&enddt=${endDtISO.toISOString()}`;
+
+                        res.render('evento-detalhe', { 
+                            event, 
+                            isParticipating, 
+                            participantsCount, 
+                            author, 
+                            hasPassed, 
+                            googleCalendarUrl,
+                            outlookCalendarUrl
+                        });
+                        return; // Evita o res.render abaixo
+                    } catch (e) {
+                        console.error('Erro ao gerar links do calendário:', e);
+                    }
+                }
+                
+                res.render('evento-detalhe', { event, isParticipating, participantsCount, author, hasPassed, googleCalendarUrl: null, outlookCalendarUrl: null });
+
             } catch (error) {
                 res.redirect('/eventos');
             }
         });
+
+        app.get('/evento/agenda/:id/ics', async (req, res) => {
+            try {
+                const event = await db.collection('events').findOne({ _id: new ObjectId(req.params.id) });
+                if (!event) return res.status(404).send('Evento não encontrado');
+
+                const cleanDate = event.date.replace(/-/g, '');
+                const cleanTime = (event.time || '00:00').replace(/:/g, '');
+                const start = `${cleanDate}T${cleanTime}00`;
+                
+                const startDt = new Date(`${event.date}T${event.time || '00:00'}:00`);
+                const endDt = new Date(startDt.getTime() + 2 * 60 * 60 * 1000);
+                const end = endDt.getFullYear().toString() + 
+                            (endDt.getMonth() + 1).toString().padStart(2, '0') + 
+                            endDt.getDate().toString().padStart(2, '0') + 'T' + 
+                            endDt.getHours().toString().padStart(2, '0') + 
+                            endDt.getMinutes().toString().padStart(2, '0') + '00';
+
+                // Conteúdo formatado para o padrão iCalendar
+                const icsContent = [
+                    'BEGIN:VCALENDAR',
+                    'VERSION:2.0',
+                    'PRODID:-//Impacta Mais//PT-BR',
+                    'BEGIN:VEVENT',
+                    `UID:${event._id}@impactamais.com`,
+                    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
+                    `DTSTART:${start}`,
+                    `DTEND:${end}`,
+                    `SUMMARY:${event.title}`,
+                    `DESCRIPTION:${(event.description || '').replace(/\n/g, '\\n')}`,
+                    `LOCATION:${event.location || ''}`,
+                    'END:VEVENT',
+                    'END:VCALENDAR'
+                ].join('\r\n');
+
+                res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+                res.setHeader('Content-Disposition', `attachment; filename="evento-${event._id}.ics"`);
+                res.send(icsContent);
+            } catch (error) {
+                console.error('Erro ao gerar ICS:', error);
+                res.status(500).send('Erro ao gerar arquivo de calendário');
+            }
+        });
+
 
         app.get('/projeto', async (req, res) => {
             const id = req.query.id;

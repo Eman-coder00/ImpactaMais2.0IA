@@ -18,7 +18,9 @@ O **Impacta Mais** é uma plataforma dinâmica projetada para conectar voluntár
 - **Acessibilidade (WCAG 2.1 AA)**: Navegação completa via teclado, suporte à tecla Escape para modais, skip links e conformidade com padrões de contraste.
 - **Ferramentas para Organizadores**: Área de gestão exclusiva para criadores de eventos com exportação de lista de participantes em CSV (Excel Ready).
 - **Transparência de Dados**: Sistema de consentimento explícito para compartilhamento de e-mail entre participantes e organizadores.
+- **Integração com Calendários**: Sistema "Add to Calendar" que permite agendar eventos no Google Agenda, Outlook Web e baixar arquivos `.ics` para Apple Calendar e outros dispositivos.
 - **Segurança Reforçada**: Proteção contra NoSQL Injection, cabeçalhos de segurança (Helmet) e controle de acesso rigoroso a rotas de exportação.
+
 
 ## 🛠️ Tecnologias Utilizadas
 

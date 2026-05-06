@@ -44,6 +44,40 @@
                                             <div class="alert" style="background: #ecfdf5; color: #065f46; border: 1px solid #10b981; padding: 1.5rem; border-radius: 12px; text-align: center; font-weight: 600;">
                                                 <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 0.5rem;"></i> Você está inscrito neste evento!
                                             </div>
+
+                                            <% if (locals.googleCalendarUrl) { %>
+                                                <div style="background: var(--gray-50); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--gray-200); margin-top: 0.5rem;">
+                                                    <h4 style="font-size: 0.9rem; color: var(--navy-900); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                        <i data-lucide="calendar" style="width: 18px; height: 18px;"></i>
+                                                        Salvar na minha Agenda
+                                                    </h4>
+                                                    <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
+                                                        <a href="<%= googleCalendarUrl %>" target="_blank" class="btn-calendar" style="display: flex; align-items: center; gap: 0.75rem; background: white; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; border-radius: 10px; color: #374151; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
+                                                            <img src="https://www.google.com/favicon.ico" alt="Google" style="width: 18px; height: 18px;">
+                                                            Google Agenda
+                                                        </a>
+                                                        <a href="<%= outlookCalendarUrl %>" target="_blank" class="btn-calendar" style="display: flex; align-items: center; gap: 0.75rem; background: white; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; border-radius: 10px; color: #374151; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
+                                                            <img src="https://outlook.live.com/favicon.ico" alt="Outlook" style="width: 18px; height: 18px;">
+                                                            Outlook / Office 365
+                                                        </a>
+                                                        <a href="/evento/agenda/<%= event._id %>/ics" class="btn-calendar" style="display: flex; align-items: center; gap: 0.75rem; background: white; border: 1px solid #e5e7eb; padding: 0.75rem 1rem; border-radius: 10px; color: #374151; font-size: 0.9rem; text-decoration: none; transition: all 0.2s;">
+                                                            <i data-lucide="download" style="width: 18px; height: 18px; color: var(--navy-900);"></i>
+                                                            Apple / Outros (.ics)
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <style>
+                                                    .btn-calendar:hover {
+                                                        border-color: var(--navy-900) !important;
+                                                        background-color: var(--navy-50) !important;
+                                                        transform: translateY(-2px);
+                                                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                                                    }
+                                                </style>
+                                            <% } %>
+
+
                                             <form action="/evento/cancelar" method="POST">
                                                 <input type="hidden" name="eventId" value="<%= event._id %>">
                                                 <button type="submit" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair do Evento</button>

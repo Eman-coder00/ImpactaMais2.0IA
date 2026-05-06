@@ -75,7 +75,12 @@
     - **Transparência e Consentimento**: Nota informativa automática sobre compartilhamento de e-mail com o organizador no momento da inscrição.
     - **Área do Organizador**: Painel exclusivo visível apenas para o autor do evento, permitindo a gestão de inscritos.
     - **Exportação de Dados**: Funcionalidade de download da lista de participantes em formato **CSV** (otimizado para Excel com BOM UTF-8), acessível apenas por organizadores autorizados.
+    - **Agendamento Inteligente (Multi-Platform)**:
+        - Integração nativa com **Google Calendar** e **Outlook Web** via deep links dinâmicos.
+        - Geração de arquivos **.ics** via rota dedicada para suporte universal (Apple Calendar, Windows Calendar, etc).
+        - Lógica de cálculo de horários com duração padrão de 2 horas e formatação compatível com padrões internacionais (RFC 5545).
     - Gestão de participação vinculada ao perfil com lógica de ocultação de botões de inscrição para o próprio criador.
+
 
 ### ✨ Polimento UI/UX e Conformidade
 - **Página de Política de Privacidade**: Nova seção dedicada para transparência de dados, integrada diretamente no fluxo de cadastro.
