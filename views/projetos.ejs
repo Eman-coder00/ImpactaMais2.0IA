@@ -143,7 +143,10 @@
                                         <img src="<%= sug.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(sug.name) + '&background=random' %>" alt="<%= sug.name %>" class="suggestion-pic">
                                         <div class="suggestion-info">
                                             <h5><%= sug.name %></h5>
-                                            <p><%= sug.city || 'Maceió' %></p>
+                                            <p style="color: var(--emerald-600); font-weight: 600; font-size: 0.75rem;">
+                                                <i data-lucide="award" style="width: 12px; height: 12px; vertical-align: middle;"></i> 
+                                                <%= sug.projectCount %> <%= sug.projectCount === 1 ? 'projeto' : 'projetos' %>
+                                            </p>
                                         </div>
                                     </div>
                                     <a href="<%= sug.isProject ? '/projeto?id=' + sug._id : '/usuario/' + sug._id %>" class="btn btn-outline btn-follow"><%= sug.isProject ? 'Ver' : 'Seguir' %></a>

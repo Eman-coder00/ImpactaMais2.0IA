@@ -166,3 +166,20 @@ input:checked + .a11y-slider:before {
     /* Garantir que o VLibras não sobreponha se estiver na esquerda */
     /* Se o VLibras estiver na direita, eles não vão colidir agora */
 }
+
+/* Estilos para o novo ícone de acessibilidade */
+.a11y-icon-svg {
+    width: 28px;
+    height: 28px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.a11y-toggle-btn .a11y-icon-svg {
+    width: 32px;
+    height: 32px;
+}
+
+.a11y-toggle-btn:hover .a11y-icon-svg {
+    transform: rotate(15deg) scale(1.1);
+}

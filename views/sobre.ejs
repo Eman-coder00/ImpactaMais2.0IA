@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Sobre Nós' }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main id="main-content" style="padding-top: 100px;">
+        <!-- Hero Section Sobre -->
+        <section class="section-padding" style="background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%); color: white; border-radius: 0 0 50px 50px; margin-bottom: 4rem;">
+            <div class="container">
+                <div style="max-width: 800px; margin: 0 auto; text-align: center;" class="animate-up">
+                    <h1 style="font-size: 3.5rem; margin-bottom: 1.5rem; color: white;">Sobre o Impacta Mais</h1>
+                    <p style="font-size: 1.2rem; opacity: 0.9; line-height: 1.8;">Somos um hub dedicado a conectar pessoas, recursos e propósitos para gerar transformações sociais sustentáveis em todo o Brasil.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <div class="container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem; align-items: center;">
+                    <div class="animate-up">
+                        <h2 style="color: var(--navy-900); margin-bottom: 1.5rem;">Nossa Missão</h2>
+                        <p style="font-size: 1.1rem; line-height: 1.7; color: var(--gray-600); margin-bottom: 2rem;">
+                            O **Impacta Mais** nasceu da necessidade de centralizar e dar visibilidade a projetos que muitas vezes operam de forma isolada. Nossa missão é ser a ponte entre quem quer ajudar e quem está na linha de frente da mudança social.
+                        </p>
+                        <div style="background: var(--emerald-50); border-left: 4px solid var(--emerald-500); padding: 1.5rem; border-radius: 0 12px 12px 0;">
+                            <p style="margin: 0; font-weight: 600; color: var(--emerald-800);">"Transformamos boas intenções em ações reais através da tecnologia e colaboração."</p>
+                        </div>
+                    </div>
+                    <div class="animate-up" style="--delay: 0.2s;">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" alt="Pessoas colaborando" style="width: 100%; border-radius: 24px; box-shadow: var(--shadow-lg);">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Responsabilidade e Empresa -->
+        <section class="section-padding" style="background: var(--gray-50);">
+            <div class="container">
+                <div class="section-title text-center animate-up">
+                    <h2 style="color: var(--navy-900);">Responsabilidade e Transparência</h2>
+                    <p>Como plataforma, assumimos compromissos claros com nossa comunidade.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    <div class="card animate-up" style="padding: 2.5rem; border-radius: 20px; --delay: 0.1s;">
+                        <div style="width: 50px; height: 50px; background: var(--navy-100); color: var(--navy-900); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-lucide="shield-check"></i>
+                        </div>
+                        <h3>Segurança dos Dados</h3>
+                        <p style="color: var(--gray-600);">Protegemos as informações de nossos usuários e parceiros seguindo as melhores práticas de privacidade e segurança digital.</p>
+                    </div>
+
+                    <div class="card animate-up" style="padding: 2.5rem; border-radius: 20px; --delay: 0.2s;">
+                        <div style="width: 50px; height: 50px; background: var(--emerald-100); color: var(--emerald-600); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-lucide="eye"></i>
+                        </div>
+                        <h3>Acessibilidade</h3>
+                        <p style="color: var(--gray-600);">Nossa plataforma foi desenhada para ser acessível a todos, seguindo padrões internacionais de inclusão digital.</p>
+                    </div>
+
+                    <div class="card animate-up" style="padding: 2.5rem; border-radius: 20px; --delay: 0.3s;">
+                        <div style="width: 50px; height: 50px; background: var(--orange-100); color: var(--orange-600); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                            <i data-lucide="briefcase"></i>
+                        </div>
+                        <h3>Compromisso Corporativo</h3>
+                        <p style="color: var(--gray-600);">A Impacta Mais atua com ética profissional e responsabilidade socioambiental em todos os seus processos internos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="section-padding">
+            <div class="container text-center animate-up">
+                <div style="background: var(--navy-900); padding: 5rem 2rem; border-radius: 40px; color: white;">
+                    <h2 style="color: white; margin-bottom: 1.5rem;">Quer fazer parte dessa mudança?</h2>
+                    <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 2.5rem;">Junte-se a milhares de pessoas que já estão transformando realidades através do Impacta Mais.</p>
+                    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <a href="/cadastro" class="btn btn-primary btn-lg">Criar Minha Conta</a>
+                        <a href="/projetos" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.3);">Explorar Projetos</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

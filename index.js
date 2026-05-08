@@ -142,6 +142,11 @@ async function startServer() {
             res.render('politica-privacidade');
         });
 
+        // Página institucional "Sobre Nós"
+        app.get('/sobre', (req, res) => {
+            res.render('sobre');
+        });
+
         app.get('/', async (req, res) => {
             try {
                 const today = new Date().toLocaleDateString('en-CA');
@@ -212,26 +217,31 @@ async function startServer() {
                 const today = new Date().toLocaleDateString('en-CA');
                 const currentTime = new Date().toLocaleTimeString('pt-BR', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' });
 
-                // Sugestões para a Sidebar (usuários aleatórios ou relevantes)
-                let suggestions = await db.collection('users').find({
-                    _id: { $ne: req.session.user ? new ObjectId(req.session.user.id) : null }
-                }).limit(5).toArray();
-
-                // Se houver poucos usuários, sugere projetos (posts) de outros autores
-                if (suggestions.length < 3) {
-                    const extraProjects = await db.collection('posts').find({
-                        authorId: { $ne: req.session.user ? new ObjectId(req.session.user.id) : null }
-                    }).limit(3).toArray();
-                    
-                    const projectSuggestions = extraProjects.map(p => ({
-                        _id: p.slug, // Usa o slug para o link
-                        name: p.title,
-                        profilePic: p.image,
-                        city: p.category,
-                        isProject: true
-                    }));
-                    suggestions = [...suggestions, ...projectSuggestions];
-                }
+                // Sugestões para a Sidebar (5 perfis com mais projetos criados)
+                const suggestions = await db.collection('posts').aggregate([
+                    { $group: { _id: "$authorId", projectCount: { $sum: 1 } } },
+                    { $match: { _id: { $ne: req.session.user ? new ObjectId(req.session.user.id) : null } } },
+                    { $sort: { projectCount: -1 } },
+                    { $limit: 5 },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'userInfo'
+                        }
+                    },
+                    { $unwind: '$userInfo' },
+                    {
+                        $project: {
+                            _id: "$userInfo._id",
+                            name: "$userInfo.name",
+                            profilePic: "$userInfo.profilePic",
+                            city: "$userInfo.city",
+                            projectCount: 1
+                        }
+                    }
+                ]).toArray();
 
                 // Próximos eventos para a Sidebar - apenas os que ainda não passaram
                 const upcomingEventsSidebar = await db.collection('events').find({
@@ -315,25 +325,31 @@ async function startServer() {
                 { projection: { name: 1, profilePic: 1 } }
             ).toArray();
 
-            // Sugestões para a Sidebar
-            let suggestions = await db.collection('users').find({
-                _id: { $ne: userId }
-            }).limit(5).toArray();
-
-            if (suggestions.length < 3) {
-                const extraProjects = await db.collection('posts').find({
-                    authorId: { $ne: userId }
-                }).limit(3).toArray();
-                
-                const projectSuggestions = extraProjects.map(p => ({
-                    _id: p.slug,
-                    name: p.title,
-                    profilePic: p.image,
-                    city: p.category,
-                    isProject: true
-                }));
-                suggestions = [...suggestions, ...projectSuggestions];
-            }
+            // Sugestões para a Sidebar (5 perfis com mais projetos criados)
+            const suggestions = await db.collection('posts').aggregate([
+                { $group: { _id: "$authorId", projectCount: { $sum: 1 } } },
+                { $match: { _id: { $ne: userId } } },
+                { $sort: { projectCount: -1 } },
+                { $limit: 5 },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'userInfo'
+                    }
+                },
+                { $unwind: '$userInfo' },
+                {
+                    $project: {
+                        _id: "$userInfo._id",
+                        name: "$userInfo.name",
+                        profilePic: "$userInfo.profilePic",
+                        city: "$userInfo.city",
+                        projectCount: 1
+                    }
+                }
+            ]).toArray();
 
             // Próximos eventos para a Sidebar
             const events = await db.collection('events').find().sort({ date: 1 }).limit(5).toArray();
@@ -384,25 +400,31 @@ async function startServer() {
                     }
                 }
 
-                // Sugestões para a Sidebar
-                let suggestions = await db.collection('users').find({
-                    _id: { $nin: [targetId, req.session.user ? new ObjectId(req.session.user.id) : null] }
-                }).limit(5).toArray();
-
-                if (suggestions.length < 3) {
-                    const extraProjects = await db.collection('posts').find({
-                        authorId: { $nin: [targetId, req.session.user ? new ObjectId(req.session.user.id) : null] }
-                    }).limit(3).toArray();
-                    
-                    const projectSuggestions = extraProjects.map(p => ({
-                        _id: p.slug,
-                        name: p.title,
-                        profilePic: p.image,
-                        city: p.category,
-                        isProject: true
-                    }));
-                    suggestions = [...suggestions, ...projectSuggestions];
-                }
+                // Sugestões para a Sidebar (5 perfis com mais projetos criados)
+                const suggestions = await db.collection('posts').aggregate([
+                    { $group: { _id: "$authorId", projectCount: { $sum: 1 } } },
+                    { $match: { _id: { $nin: [targetId, req.session.user ? new ObjectId(req.session.user.id) : null] } } },
+                    { $sort: { projectCount: -1 } },
+                    { $limit: 5 },
+                    {
+                        $lookup: {
+                            from: 'users',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'userInfo'
+                        }
+                    },
+                    { $unwind: '$userInfo' },
+                    {
+                        $project: {
+                            _id: "$userInfo._id",
+                            name: "$userInfo.name",
+                            profilePic: "$userInfo.profilePic",
+                            city: "$userInfo.city",
+                            projectCount: 1
+                        }
+                    }
+                ]).toArray();
 
                 // Próximos eventos para a Sidebar
                 const events = await db.collection('events').find().sort({ date: 1 }).limit(5).toArray();

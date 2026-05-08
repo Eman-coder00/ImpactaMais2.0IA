@@ -78,23 +78,23 @@ async function seed() {
         }
     ];
 
-    // Upsert posts (by slug)
-    for (const post of posts) {
-        await db.collection('posts').updateOne(
-            { slug: post.slug },
-            { $set: post },
-            { upsert: true }
-        );
-    }
+    // // Upsert posts (by slug)
+    // for (const post of posts) {
+    //     await db.collection('posts').updateOne(
+    //         { slug: post.slug },
+    //         { $set: post },
+    //         { upsert: true }
+    //     );
+    // }
 
-    // Upsert events (by title)
-    for (const event of events) {
-        await db.collection('events').updateOne(
-            { title: event.title },
-            { $set: event },
-            { upsert: true }
-        );
-    }
+    // // Upsert events (by title)
+    // for (const event of events) {
+    //     await db.collection('events').updateOne(
+    //         { title: event.title },
+    //         { $set: event },
+    //         { upsert: true }
+    //     );
+    // }
 
     console.log('Seed finalizado com sucesso!');
     await client.close();

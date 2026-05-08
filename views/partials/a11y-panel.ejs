@@ -1,13 +1,33 @@
 <!-- Botão Flutuante de Acessibilidade -->
 <button class="a11y-toggle-btn" onclick="toggleA11yPanel()" aria-label="Abrir menu de acessibilidade">
-    <i data-lucide="accessibility"></i>
+    <svg viewBox="0 0 100 100" class="a11y-icon-svg" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="white" stroke="#0f172a" stroke-width="5" />
+        <path d="M22 32C35 45 65 45 78 32" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />
+        <path d="M50 35V60 L34 85" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M50 60 L66 85" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="50" cy="22" r="8" fill="#00CFFF" stroke="#0f172a" stroke-width="4" />
+        <circle cx="22" cy="32" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+        <circle cx="78" cy="32" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+        <circle cx="34" cy="85" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+        <circle cx="66" cy="85" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+    </svg>
 </button>
 
 <!-- Painel de Acessibilidade -->
 <div id="a11y-panel" class="a11y-panel">
     <div class="a11y-header">
         <div class="a11y-title">
-            <i data-lucide="accessibility"></i>
+            <svg viewBox="0 0 100 100" class="a11y-icon-svg" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                <circle cx="50" cy="50" r="46" fill="white" stroke="#0f172a" stroke-width="5" />
+                <path d="M22 32C35 45 65 45 78 32" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />
+                <path d="M50 35V60 L34 85" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M50 60 L66 85" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="50" cy="20" r="8" fill="#00CFFF" stroke="#0f172a" stroke-width="4" />
+                <circle cx="22" cy="32" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+                <circle cx="78" cy="32" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+                <circle cx="34" cy="85" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+                <circle cx="66" cy="85" r="5" fill="#00CFFF" stroke="#0f172a" stroke-width="3" />
+            </svg>
             <span>Acessibilidade</span>
         </div>
         <button class="a11y-close" onclick="toggleA11yPanel()" aria-label="Fechar menu">&times;</button>
