@@ -290,5 +290,19 @@
     </div>
 
     <%- include('partials/footer') %>
+
+    <script>
+        // Verificar se houve erro de conteúdo ofensivo via query parameter
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'offensive') {
+                alert('⚠️ Atenção: Seu comentário contém palavras ou termos que não são permitidos pela plataforma e não pôde ser publicado.');
+                
+                // Limpar o parâmetro da URL sem recarregar a página
+                const newUrl = window.location.pathname + (window.location.search.replace(/[&?]error=offensive/, '').replace(/^&/, '?'));
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        });
+    </script>
 </body>
 </html>

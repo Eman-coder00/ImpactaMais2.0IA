@@ -122,14 +122,18 @@
                         body: JSON.stringify({ receiverId: friendId, content })
                     });
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        addMessageToUI(data.message);
-                        chatBox.scrollTop = chatBox.scrollHeight;
+                        if (response.ok) {
+                            const data = await response.json();
+                            addMessageToUI(data.message);
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        } else {
+                            const errorData = await response.json();
+                            alert(`⚠️ Erro: ${errorData.error || 'Não foi possível enviar a mensagem.'}`);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao enviar:', error);
+                        alert('⚠️ Erro de conexão ao enviar mensagem.');
                     }
-                } catch (error) {
-                    console.error('Erro ao enviar:', error);
-                }
             });
 
             function addMessageToUI(msg) {

@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const { MongoStore } = require('connect-mongo');
 const { ObjectId } = require('mongodb');
 const { connectDB, getDB } = require('./db');
+const { hasOffensiveWords } = require('./utils/word-filter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -615,6 +616,10 @@ async function startServer() {
             if (!title || !category || !description || !longDescription || !impact || !volunteers || !image) {
                 return res.render('novo-projeto', { error: 'Por favor, preencha todos os campos, incluindo a imagem de capa.' });
             }
+
+            if (hasOffensiveWords(title) || hasOffensiveWords(description) || hasOffensiveWords(longDescription)) {
+                return res.render('novo-projeto', { error: 'O conteúdo contém palavras ou termos não permitidos pela plataforma.' });
+            }
             
             try {
                 // Gerar slug a partir do título
@@ -664,6 +669,10 @@ async function startServer() {
             
             if (!title || !category || !description || !longDescription || !date || !time || !location) {
                 return res.render('novo-evento', { error: 'Por favor, preencha todos os campos obrigatórios.' });
+            }
+
+            if (hasOffensiveWords(title) || hasOffensiveWords(description) || hasOffensiveWords(longDescription)) {
+                return res.render('novo-evento', { error: 'O conteúdo contém palavras ou termos não permitidos pela plataforma.' });
             }
             
             try {
@@ -1051,7 +1060,13 @@ async function startServer() {
             if (!req.session.user) return res.redirect('/login');
             
             const { projectId, content } = req.body;
-            if (!projectId || !content) return res.redirect('back');
+            if (!projectId || !content) return res.redirect(req.get('Referrer') || '/');
+
+            if (hasOffensiveWords(content)) {
+                const redirectUrl = req.get('Referrer') || `/projeto?id=${projectId}`;
+                const separator = redirectUrl.includes('?') ? '&' : '?';
+                return res.redirect(`${redirectUrl}${separator}error=offensive`);
+            }
 
             try {
                 const pid = new ObjectId(projectId);
@@ -1302,6 +1317,10 @@ async function startServer() {
             const { receiverId, content } = req.body;
             const myId = new ObjectId(req.session.user.id);
             const rId = new ObjectId(receiverId);
+
+            if (hasOffensiveWords(content)) {
+                return res.status(400).json({ error: 'Sua mensagem contém termos não permitidos.' });
+            }
 
             try {
                 const message = {
