@@ -15,7 +15,7 @@ O **Impacta Mais** é uma plataforma dinâmica projetada para conectar voluntár
 - **Gestão de Projetos**: Criação de projetos sociais com sistema de curtidas (AJAX) e comentários.
 - **Gestão de Eventos**: Sistema inteligente de ciclo de vida com separação entre "Próximos" e "Encerrados", além de filtros dinâmicos por data e hora no feed.
 - **Gamificação (Medalhas)**: Sistema de conquistas baseado no impacto social do usuário, recompensando a criação de projetos com medalhas premium (Elo Inicial, Nó de Impacto e Arquiteto Social).
-- **Acessibilidade (WCAG 2.1 AA)**: Navegação completa via teclado, suporte à tecla Escape para modais, skip links e conformidade com padrões de contraste.
+- **Acessibilidade Premium (WCAG 2.1 AA)**: Sistema robusto que inclui navegação completa via teclado com feedback visual de alto contraste (foco ouro 3px), suporte à tecla Escape, skip links, e estados ARIA dinâmicos para componentes interativos.
 - **Ferramentas para Organizadores**: Área de gestão exclusiva para criadores de eventos com exportação de lista de participantes em CSV (Excel Ready).
 - **Transparência de Dados**: Sistema de consentimento explícito para compartilhamento de e-mail entre participantes e organizadores.
 - **Integração com Calendários**: Sistema "Add to Calendar" que permite agendar eventos no Google Agenda, Outlook Web e baixar arquivos `.ics` para Apple Calendar e outros dispositivos.

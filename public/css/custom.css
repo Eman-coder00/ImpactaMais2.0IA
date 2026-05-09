@@ -221,7 +221,7 @@ img {
     transition: all 0.2s ease !important;
 }
 
-.auth-form .btn-primary:hover {
+.auth-form .btn-primary:hover, .auth-form .btn-primary:focus {
     background-color: #0e5270 !important;
     transform: translateY(-2px) !important;
 }
@@ -238,7 +238,7 @@ img {
     text-decoration: none !important;
 }
 
-.auth-footer a:hover {
+.auth-footer a:hover, .auth-footer a:focus {
     text-decoration: underline !important;
 }
 
@@ -431,7 +431,7 @@ footer {
     transition: transform 0.2s ease;
 }
 
-.user-welcome:hover .nav-profile-pic {
+.user-welcome:hover, .user-welcome:focus .nav-profile-pic {
     transform: scale(1.1);
 }
 

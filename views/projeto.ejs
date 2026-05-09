@@ -16,7 +16,7 @@
                     <p id="project-description" class="lead-text"><%= post.description %></p>
                 </div>
                 
-                <div id="project-image" class="project-hero-img animate-up" style="--bg-url: url('<%= post.image %>'); background-image: var(--bg-url); animation-delay: 0.2s;"></div>
+                <div id="project-image" class="project-hero-img animate-up" style="--bg-url: url('<%= post.image %>'); background-image: var(--bg-url); animation-delay: 0.2s;" role="img" aria-label="Imagem de capa do projeto: <%= post.title %>"></div>
             </div>
         </section>
 
@@ -232,7 +232,7 @@
     <!-- MODAL COMPARTILHAR -->
     <div id="modal-share" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
         <div class="auth-card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 450px; width: 90%; animation: fadeInUp 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); margin: 0; background: white; border-radius: var(--radius-lg); padding: 2rem;">
-            <button id="btn-close-share" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
+            <button id="btn-close-share" aria-label="Fechar modal de compartilhamento" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
                 <i data-lucide="x" style="width: 18px; height: 18px;"></i>
             </button>
             

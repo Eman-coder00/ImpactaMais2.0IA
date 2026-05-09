@@ -163,7 +163,7 @@
     stroke-width: 2px;
 }
 
-.action-btn:hover {
+.action-btn:hover, .action-btn:focus {
     background: var(--gray-50);
     border-color: var(--gray-300);
     transform: translateY(-2px);
@@ -313,13 +313,13 @@
     transition: transform 0.2s ease;
 }
 
-.btn-read-more:hover {
+.btn-read-more:hover, .btn-read-more:focus {
     background: #12678D;
     color: white;
     transform: translateX(3px);
 }
 
-.btn-read-more:hover i {
+.btn-read-more:hover, .btn-read-more:focus i {
     transform: translateX(3px);
 }
 

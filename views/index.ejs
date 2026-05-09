@@ -39,23 +39,29 @@
                 <div class="projects-grid">
                     <% if (locals.posts && Array.isArray(posts) && posts.length > 0) { %>
                         <% posts.forEach(function(post, index) { %>
-                            <div class="project-card animate-up" onclick="if(!event.target.closest('.btn-like-ajax')) window.location.href='/projeto?id=<%= post.slug %>'" style="--delay: <%= (index + 1) * 0.1 %>s; animation-delay: var(--delay); cursor: pointer;">
-                                <div class="project-img" style="background-image: url('<%= post.image %>');"></div>
-                                <div class="project-info">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                        <span class="project-tag"><%= post.category %></span>
-                                        <div class="like-container">
-                                            <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
-                                                <i data-lucide="heart" class="heart-icon"></i>
-                                                <span class="like-count"><%= post.likes ? post.likes.length : 0 %></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h3><%= post.title %></h3>
-                                    <p><%= post.description %></p>
-                                    <a href="/projeto?id=<%= post.slug %>" class="btn btn-outline" style="width: 100%;">Saiba Mais</a>
-                                </div>
-                            </div>
+                            <div class="project-card animate-up" 
+                                 onclick="if(!event.target.closest('.btn-like-ajax')) window.location.href='/projeto?id=<%= post.slug %>'" 
+                                 onkeypress="if(event.key === 'Enter' && !event.target.closest('.btn-like-ajax')) window.location.href='/projeto?id=<%= post.slug %>'"
+                                 style="--delay: <%= (index + 1) * 0.1 %>s; animation-delay: var(--delay); cursor: pointer;"
+                                 tabindex="0"
+                                 role="link"
+                                 aria-label="Projeto: <%= post.title %>. Clique para ver detalhes.">
+                                 <div class="project-img" style="background-image: url('<%= post.image %>');" role="img" aria-label="Imagem do projeto <%= post.title %>"></div>
+                                 <div class="project-info">
+                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                         <span class="project-tag"><%= post.category %></span>
+                                         <div class="like-container">
+                                             <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
+                                                 <i data-lucide="heart" class="heart-icon"></i>
+                                                 <span class="like-count"><%= post.likes ? post.likes.length : 0 %></span>
+                                             </button>
+                                         </div>
+                                     </div>
+                                     <h3><%= post.title %></h3>
+                                     <p><%= post.description %></p>
+                                     <a href="/projeto?id=<%= post.slug %>" class="btn btn-outline" style="width: 100%;" tabindex="-1">Saiba Mais</a>
+                                 </div>
+                             </div>
                         <% }); %>
                     <% } else { %>
                         <p style="grid-column: 1/-1; text-align: center; opacity: 0.7;">Nenhum projeto encontrado no momento.</p>

@@ -1,4 +1,4 @@
-<footer>
+<footer role="contentinfo">
     <div class="container">
         <div class="footer-content">
             <div class="footer-info">
@@ -18,7 +18,8 @@
                 <h4>Fique por dentro</h4>
                 <p style="margin-bottom: 1rem; font-size: 0.9rem; opacity: 0.8;">Receba notícias sobre nossos projetos e eventos.</p>
                 <form class="newsletter-form">
-                    <input type="email" placeholder="Seu melhor e-mail" required>
+                    <label for="newsletter-email" class="sr-only">E-mail para newsletter</label>
+                    <input type="email" id="newsletter-email" placeholder="Seu melhor e-mail" required>
                     <button type="submit" class="btn btn-primary">Assinar</button>
                 </form>
             </div>

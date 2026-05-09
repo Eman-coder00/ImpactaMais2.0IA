@@ -29,12 +29,18 @@
 
             <form class="auth-form" id="loginForm" method="POST" action="/login">
                 <div class="form-group">
-                    <label for="email">E-mail</label>
+                    <label for="email">
+                        E-mail 
+                        <span aria-label="Campo obrigatório" class="required" style="color: #ef4444;">*</span>
+                    </label>
                     <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Senha</label>
+                    <label for="password">
+                        Senha 
+                        <span aria-label="Campo obrigatório" class="required" style="color: #ef4444;">*</span>
+                    </label>
                     <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
                     <div style="text-align: right; margin-top: 0.5rem;">
                         <a href="/esqueci-senha" style="font-size: 0.85rem; color: #12678D; font-weight: 700;">Esqueci minha senha</a>
