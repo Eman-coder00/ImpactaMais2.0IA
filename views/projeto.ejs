@@ -187,6 +187,40 @@
                             <% } %>
                         </div>
                     </div>
+
+                    <% if (locals.user && post.authorId && post.authorId.toString() === user._id.toString()) { %>
+                        <div class="manage-project-section" style="margin-top: 4rem; padding: 2rem; background: #fff1f2; border: 1px dashed #fda4af; border-radius: var(--radius-lg);">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="width: 44px; height: 44px; background: #be123c; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <i data-lucide="trash-2" style="width: 22px; height: 22px;"></i>
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; color: #9f1239; font-size: 1.25rem;">Zona de Perigo</h3>
+                                    <p style="margin: 0; font-size: 0.9rem; color: #be123c; opacity: 0.8;">Ações irreversíveis para o seu projeto</p>
+                                </div>
+                            </div>
+                            
+                            <p style="font-size: 0.95rem; color: #9f1239; margin-bottom: 1.5rem; line-height: 1.6;">
+                                Ao apagar este projeto, todos os dados, curtidas e comentários associados serão removidos permanentemente. Esta ação não pode ser desfeita.
+                            </p>
+
+                            <form action="/projeto/deletar" method="POST" id="form-delete-project">
+                                <input type="hidden" name="projectId" value="<%= post._id %>">
+                                <button type="button" id="btn-delete-project" class="btn" style="background: #e11d48; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                                    Apagar Projeto Permanentemente
+                                </button>
+                            </form>
+                        </div>
+
+                        <script>
+                            document.getElementById('btn-delete-project').addEventListener('click', () => {
+                                if (confirm('⚠️ TEM CERTEZA? \n\nEsta ação apagará o projeto "<%= post.title %>" permanentemente e não pode ser desfeita.')) {
+                                    document.getElementById('form-delete-project').submit();
+                                }
+                            });
+                        </script>
+                    <% } %>
                 </div>
 
                 <aside class="sidebar animate-up" style="animation-delay: 0.3s;">

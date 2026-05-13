@@ -110,10 +110,26 @@
                                     <p style="margin: 0; font-size: 0.8rem; color: var(--gray-500);">Gerencie os participantes do seu evento</p>
                                 </div>
                             </div>
-                            <a href="/evento/exportar/<%= event._id %>" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: white; border-color: var(--gray-200); color: var(--navy-900); font-weight: 600; padding: 0.8rem;">
+                            <a href="/evento/exportar/<%= event._id %>" class="btn btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: white; border-color: var(--gray-200); color: var(--navy-900); font-weight: 600; padding: 0.8rem; margin-bottom: 1rem;">
                                 <i data-lucide="download" style="width: 18px; height: 18px;"></i>
                                 Baixar Lista de Participantes (CSV)
                             </a>
+
+                            <form action="/evento/deletar" method="POST" id="form-delete-event">
+                                <input type="hidden" name="eventId" value="<%= event._id %>">
+                                <button type="button" id="btn-delete-event" class="btn" style="width: 100%; background: #fff1f2; color: #e11d48; border: 1px solid #fda4af; padding: 0.8rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                                    Apagar Evento
+                                </button>
+                            </form>
+
+                            <script>
+                                document.getElementById('btn-delete-event').addEventListener('click', () => {
+                                    if (confirm('⚠️ TEM CERTEZA? \n\nEsta ação apagará o evento "<%= event.title %>" permanentemente e todos os dados de participação serão perdidos.')) {
+                                        document.getElementById('form-delete-event').submit();
+                                    }
+                                });
+                            </script>
                         </div>
                     <% } %>
                 </div>

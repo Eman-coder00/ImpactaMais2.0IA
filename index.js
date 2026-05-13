@@ -657,6 +657,28 @@ async function startServer() {
             }
         });
 
+        app.post('/projeto/deletar', async (req, res) => {
+            if (!req.session.user) return res.status(401).send('Não autorizado');
+            const { projectId } = req.body;
+            if (!projectId) return res.status(400).send('ID do projeto não fornecido');
+
+            try {
+                const project = await db.collection('posts').findOne({ _id: new ObjectId(projectId) });
+                if (!project) return res.status(404).send('Projeto não encontrado');
+
+                // Verificar se o usuário é o autor
+                if (project.authorId.toString() !== req.session.user.id) {
+                    return res.status(403).send('Você não tem permissão para apagar este projeto');
+                }
+
+                await db.collection('posts').deleteOne({ _id: new ObjectId(projectId) });
+                res.redirect('/projetos');
+            } catch (error) {
+                console.error('Erro ao deletar projeto:', error);
+                res.status(500).send('Erro interno ao deletar projeto');
+            }
+        });
+
         app.get('/evento/novo', (req, res) => {
             if (!req.session.user) return res.redirect('/login');
             res.render('novo-evento', { error: null });
@@ -694,6 +716,28 @@ async function startServer() {
             } catch (error) {
                 console.error('Erro ao criar evento:', error);
                 res.render('novo-evento', { error: 'Erro ao salvar evento. Tente novamente.' });
+            }
+        });
+
+        app.post('/evento/deletar', async (req, res) => {
+            if (!req.session.user) return res.status(401).send('Não autorizado');
+            const { eventId } = req.body;
+            if (!eventId) return res.status(400).send('ID do evento não fornecido');
+
+            try {
+                const event = await db.collection('events').findOne({ _id: new ObjectId(eventId) });
+                if (!event) return res.status(404).send('Evento não encontrado');
+
+                // Verificar se o usuário é o autor
+                if (event.authorId.toString() !== req.session.user.id) {
+                    return res.status(403).send('Você não tem permissão para apagar este evento');
+                }
+
+                await db.collection('events').deleteOne({ _id: new ObjectId(eventId) });
+                res.redirect('/eventos');
+            } catch (error) {
+                console.error('Erro ao deletar evento:', error);
+                res.status(500).send('Erro interno ao deletar evento');
             }
         });
 

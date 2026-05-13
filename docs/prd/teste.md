@@ -67,6 +67,8 @@
     - Criação com upload de imagem, descrição curta e **descrição detalhada (Rich Text/Long Description)**.
     - Geração automática de Slugs amigáveis para URLs limpas.
     - Sistema de **Likes** e **Comentários**.
+    - **Exibição Cronológica Precisa**: Datas de postagem formatadas (ex: 13 de maio de 2026) no feed, garantindo clareza sobre a longevidade das iniciativas.
+    - **Exclusão Segura**: Interface de "Zona de Perigo" nos detalhes do projeto, permitindo que apenas o autor remova a publicação com confirmação do navegador.
 - **Eventos e Agenda**:
     - Agendamento com data, hora e local.
     - **Ciclo de Vida de Eventos**: Separação automática entre "Próximos" e "Encerrados" com estilização visual diferenciada (grayscale para eventos passados).
@@ -75,6 +77,7 @@
     - **Transparência e Consentimento**: Nota informativa automática sobre compartilhamento de e-mail com o organizador no momento da inscrição.
     - **Área do Organizador**: Painel exclusivo visível apenas para o autor do evento, permitindo a gestão de inscritos.
     - **Exportação de Dados**: Funcionalidade de download da lista de participantes em formato **CSV** (otimizado para Excel com BOM UTF-8), acessível apenas por organizadores autorizados.
+    - **Exclusão de Evento**: Botão de remoção definitiva integrado à Área do Organizador, com verificação de autoria no backend para segurança dos dados.
     - **Agendamento Inteligente (Multi-Platform)**:
         - Integração nativa com **Google Calendar** e **Outlook Web** via deep links dinâmicos.
         - Geração de arquivos **.ics** via rota dedicada para suporte universal (Apple Calendar, Windows Calendar, etc).
@@ -93,6 +96,7 @@
 
 1.  **Navegação por Teclado**: 
     - *Skip Link* funcional no topo para saltar navegações repetitivas.
+    - **Percurso Completo**: Navegação total via Tab/Shift+Tab em todos os elementos interativos do site, garantindo independência do mouse.
     - Estados de `:focus-visible` com anel de destaque (Emerald 500) de alto contraste.
     - Trava de foco em modais e fechamento via tecla `Esc`.
     - **Interatividade Acessível**: Medalhas e componentes customizados implementados como elementos focáveis (`button`) com `aria-labels` descritivos para leitores de tela.
@@ -130,7 +134,8 @@ sequenceDiagram
 - [x] **Acessibilidade**: Validação manual de teclado e hierarquia de títulos concluída.
 - [x] **Segurança**: Proteção de rotas, hashing de senhas e sanitização de entradas.
 - [x] **Conformidade Legal**: Política de privacidade implementada e vinculada com notas de consentimento em inscrições.
-- [x] **Ferramentas de Gestão**: Exportação CSV funcional e área do organizador protegida.
+- [x] **Gerenciamento de Conteúdo**: Sistema de exclusão segura para autores e exibição de datas precisas implementados.
+- [x] **Manutenção e Expansão**: logs básicos e estrutura escalável.
 
 ---
 
