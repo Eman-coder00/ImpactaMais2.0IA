@@ -16,13 +16,13 @@
             </div>
 
             <% if (locals.error) { %>
-                <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                <div class="alert alert-error" role="alert" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
                     <%= error %>
                 </div>
             <% } %>
 
             <% if (locals.success) { %>
-                <div class="alert alert-success" style="background: #f0f7ff; color: #0e5270; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                <div class="alert alert-success" role="alert" style="background: #f0f7ff; color: #0e5270; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
                     <%- success %>
                 </div>
             <% } %>

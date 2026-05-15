@@ -103,7 +103,11 @@
 2.  **Hierarquia de Títulos (H1-H6)**: Estrutura semântica corrigida em todas as páginas para garantir um único `H1` por documento e progressão lógica.
 3.  **Semântica HTML5**: Uso rigoroso de `<main>`, `<nav>`, `<article>` e `<section>`.
 4.  **Contraste e Cores**: Paleta validada e suporte a filtros de daltonismo/dislexia via menu de acessibilidade.
-5.  **Formulários**: Labels explícitos associados via `id` e mensagens de erro acessíveis.
+5.  **Formulários e Alertas**: Labels explícitos associados via `id` e uso de `role="alert"` em mensagens de erro/sucesso para feedback imediato em tecnologias assistivas.
+6.  **Semântica de Feedback Dinâmico**: 
+    - Implementação de `aria-expanded` e `aria-controls` nos campos de busca.
+    - Uso de `role="listbox"` para containers de resultados dinâmicos.
+7.  **Refinamento de Ícones**: Ocultação sistemática de ícones decorativos via `aria-hidden="true"` para reduzir ruído na navegação por voz.
 
 ---
 
@@ -131,10 +135,11 @@ sequenceDiagram
 
 - [x] **Responsividade**: Testado em Mobile (320px), Tablet (768px) e Desktop (1920px).
 - [x] **Sincronização**: Mensagens e conversas atualizando sem refresh.
-- [x] **Acessibilidade**: Validação manual de teclado e hierarquia de títulos concluída.
+- [x] **Acessibilidade**: Validação manual de teclado, hierarquia de títulos e semântica de modais/alertas (WCAG 2.1 AA) concluída.
 - [x] **Segurança**: Proteção de rotas, hashing de senhas e sanitização de entradas.
 - [x] **Conformidade Legal**: Política de privacidade implementada e vinculada com notas de consentimento em inscrições.
 - [x] **Gerenciamento de Conteúdo**: Sistema de exclusão segura para autores e exibição de datas precisas implementados.
+- [x] **Refinamentos Finais**: Revisão de contraste, ícones e feedback dinâmico finalizada.
 - [x] **Manutenção e Expansão**: logs básicos e estrutura escalável.
 
 ---

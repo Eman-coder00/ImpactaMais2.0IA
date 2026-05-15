@@ -14,7 +14,7 @@
                     <div class="profile-header animate-up" style="background: white; padding: 2.5rem; border-radius: 12px; border: 1px solid var(--gray-200); margin-bottom: 2rem; text-align: center; position: relative;">
                         <div class="profile-edit-actions" style="position: absolute; top: 1rem; right: 1rem;">
                             <button id="btn-edit-profile" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+                                <i data-lucide="edit-3" aria-hidden="true" style="width: 14px; height: 14px;"></i>
                                 Editar Perfil
                             </button>
                         </div>
@@ -165,7 +165,7 @@
                             <h3 style="font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--navy-900);">Amigos</h3>
                             <div id="btn-view-friends" style="cursor: pointer; padding: 1.5rem; background: var(--gray-50); border-radius: 8px; text-align: center; border: 1px solid var(--gray-100); transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
                                 <div style="width: 45px; height: 45px; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-                                    <i data-lucide="users" style="width: 24px; height: 24px;"></i>
+                                    <i data-lucide="users" aria-hidden="true" style="width: 24px; height: 24px;"></i>
                                 </div>
                                 <div>
                                     <h4 style="color: var(--navy-900); margin: 0; font-size: 1rem;"><%= friendsList.length %> <%= friendsList.length === 1 ? 'Amigo' : 'Amigos' %></h4>
@@ -180,13 +180,14 @@
     </main>
 
     <!-- MODAL DE EDIÇÃO -->
-    <div id="modal-edit-profile" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div id="modal-edit-profile" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div class="auth-card" style="position: relative; max-width: 500px; animation: fadeInUp 0.4s ease;">
             <button id="btn-close-modal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: var(--gray-600);">
-                <i data-lucide="x"></i>
+                <i data-lucide="x" aria-hidden="true"></i>
+                <span class="sr-only">Fechar</span>
             </button>
             <div class="auth-header">
-                <h2>Editar Perfil</h2>
+                <h2 id="edit-modal-title">Editar Perfil</h2>
                 <p>Atualize sua foto e informações</p>
             </div>
             <form id="form-edit-profile" class="auth-form">
@@ -210,13 +211,14 @@
     </div>
 
     <!-- MODAL DE AMIGOS -->
-    <div id="modal-amigos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div id="modal-amigos" role="dialog" aria-modal="true" aria-labelledby="friends-modal-title" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
         <div class="auth-card" style="position: relative; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
             <button id="btn-close-modal-amigos" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: var(--gray-600);">
-                <i data-lucide="x"></i>
+                <i data-lucide="x" aria-hidden="true"></i>
+                <span class="sr-only">Fechar</span>
             </button>
             <div class="auth-header">
-                <h2>Seus Amigos</h2>
+                <h2 id="friends-modal-title">Seus Amigos</h2>
             </div>
             <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
                 <% if (locals.friendsList && friendsList.length > 0) { %>
@@ -313,10 +315,11 @@
     </script>
 
     <!-- MODAL DE MEDALHAS -->
-    <div id="modal-badge" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div id="modal-badge" role="dialog" aria-modal="true" aria-labelledby="badge-modal-title" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
         <div class="auth-card" style="position: relative; max-width: 400px; width: 90%; text-align: center; padding: 3rem 2rem; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
             <button id="btn-close-modal-badge" style="position: absolute; top: 1.5rem; right: 1.5rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                <i data-lucide="x" aria-hidden="true"></i>
+                <span class="sr-only">Fechar</span>
             </button>
             <div style="width: 120px; height: 120px; margin: 0 auto 2rem; border-radius: 50%; background: white; padding: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
                 <img id="badge-modal-img" src="" style="width: 100%; height: 100%; object-fit: contain;">

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (query.length < 2) {
                 resultsElement.hidden = true;
+                inputElement.setAttribute('aria-expanded', 'false');
                 resultsElement.innerHTML = '';
                 return;
             }
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 resultsElement.hidden = false;
+                inputElement.setAttribute('aria-expanded', 'true');
 
                 try {
                     const response = await fetch(`/api/search/global?q=${encodeURIComponent(query)}`);
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (error) {
                     console.error('Erro na busca:', error);
                     resultsElement.hidden = true;
+                    inputElement.setAttribute('aria-expanded', 'false');
                 }
             }, 300);
         });
@@ -50,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             if (!inputElement.contains(e.target) && !resultsElement.contains(e.target)) {
                 resultsElement.hidden = true;
+                inputElement.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -57,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputElement.addEventListener('focus', () => {
             if (inputElement.value.trim().length >= 2) {
                 resultsElement.hidden = false;
+                inputElement.setAttribute('aria-expanded', 'true');
             }
         });
     }

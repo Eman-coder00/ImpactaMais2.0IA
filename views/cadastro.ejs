@@ -4,7 +4,7 @@
 <body>
 
     <a href="/" class="back-home">
-        <i data-lucide="arrow-left"></i> Voltar para o início
+        <i data-lucide="arrow-left" aria-hidden="true"></i> Voltar para o início
     </a>
 
     <main class="auth-page">
@@ -16,7 +16,7 @@
             </div>
 
             <% if (error) { %>
-                <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                <div class="alert alert-error" role="alert" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
                     <%= error %>
                 </div>
             <% } %>

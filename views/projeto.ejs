@@ -44,12 +44,12 @@
                             
                             <div class="like-container" style="display: flex; align-items: center; gap: 1rem;">
                                 <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
-                                    <i data-lucide="heart" class="heart-icon"></i>
+                                    <i data-lucide="heart" class="heart-icon" aria-hidden="true"></i>
                                     <span class="like-count" id="likeCountText"><%= post.likes ? post.likes.length : 0 %> <%= (post.likes ? post.likes.length : 0) === 1 ? 'Curtida' : 'Curtidas' %></span>
                                 </button>
                                 
                                 <button id="btn-share-project" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-color: var(--gray-200); color: var(--gray-600);">
-                                    <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+                                    <i data-lucide="share-2" aria-hidden="true" style="width: 16px; height: 16px;"></i>
                                     Compartilhar
                                 </button>
                             </div>
@@ -63,7 +63,7 @@
                                 </button>
 
                                 <button id="btn-share-project-no-author" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-color: var(--gray-200); color: var(--gray-600);">
-                                    <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+                                    <i data-lucide="share-2" aria-hidden="true" style="width: 16px; height: 16px;"></i>
                                     Compartilhar
                                 </button>
                             </div>
@@ -172,7 +172,7 @@
                                     <div class="comment-item" style="background: var(--white); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--gray-100); box-shadow: var(--shadow-sm);">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                                             <span style="font-weight: 700; color: var(--navy-900); display: flex; align-items: center; gap: 0.5rem;">
-                                                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                                <i data-lucide="user" aria-hidden="true" style="width: 16px; height: 16px;"></i>
                                                 <%= comment.userName %>
                                             </span>
                                             <span style="font-size: 0.85rem; color: var(--gray-600);">
@@ -192,7 +192,7 @@
                         <div class="manage-project-section" style="margin-top: 4rem; padding: 2rem; background: #fff1f2; border: 1px dashed #fda4af; border-radius: var(--radius-lg);">
                             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
                                 <div style="width: 44px; height: 44px; background: #be123c; color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                    <i data-lucide="trash-2" style="width: 22px; height: 22px;"></i>
+                                    <i data-lucide="trash-2" aria-hidden="true" style="width: 22px; height: 22px;"></i>
                                 </div>
                                 <div>
                                     <h3 style="margin: 0; color: #9f1239; font-size: 1.25rem;">Zona de Perigo</h3>
@@ -264,14 +264,14 @@
     </main>
 
     <!-- MODAL COMPARTILHAR -->
-    <div id="modal-share" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
+    <div id="modal-share" role="dialog" aria-modal="true" aria-labelledby="share-modal-title" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
         <div class="auth-card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 450px; width: 90%; animation: fadeInUp 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); margin: 0; background: white; border-radius: var(--radius-lg); padding: 2rem;">
             <button id="btn-close-share" aria-label="Fechar modal de compartilhamento" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
                 <i data-lucide="x" style="width: 18px; height: 18px;"></i>
             </button>
             
             <div class="auth-header" style="margin-bottom: 1.5rem; text-align: center;">
-                <h2 style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
+                <h2 id="share-modal-title" style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
                 <p style="color: var(--gray-500); margin-top: 0.5rem;">Escolha como espalhar essa iniciativa</p>
             </div>
 
