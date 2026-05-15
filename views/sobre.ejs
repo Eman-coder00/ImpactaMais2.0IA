@@ -70,15 +70,66 @@
             </div>
         </section>
 
-        <!-- CTA Final -->
-        <section class="section-padding">
-            <div class="container text-center animate-up">
-                <div style="background: var(--navy-900); padding: 5rem 2rem; border-radius: 40px; color: white;">
-                    <h2 style="color: white; margin-bottom: 1.5rem;">Quer fazer parte dessa mudança?</h2>
-                    <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 2.5rem;">Junte-se a milhares de pessoas que já estão transformando realidades através do Impacta Mais.</p>
-                    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
-                        <a href="/cadastro" class="btn btn-primary btn-lg">Criar Minha Conta</a>
-                        <a href="/projetos" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.3);">Explorar Projetos</a>
+
+
+        <!-- Contato Section -->
+        <section class="section-padding" style="background: var(--gray-50);">
+            <div class="container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem; align-items: start;">
+                    <!-- Informações -->
+                    <div class="animate-up">
+                        <h2 style="color: var(--navy-900); margin-bottom: 1rem;">Fale Conosco</h2>
+                        <p style="font-size: 1.1rem; line-height: 1.6; color: var(--gray-600); margin-bottom: 2rem;">
+                            Pelo canal de atendimento ao cliente estamos disponíveis para ajudar!
+                        </p>
+                        
+                        <h3 style="font-size: 1.1rem; color: var(--navy-900); margin-bottom: 1.5rem; font-weight: 700;">Nossos Contatos:</h3>
+                        <ul style="padding: 0; margin: 0;">
+                            <li style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; color: var(--navy-900); font-weight: 500;">
+                                <i data-lucide="smartphone" style="width: 20px; height: 20px;"></i>
+                                <span>(82) 00000-0000</span>
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; color: var(--navy-900); font-weight: 500;">
+                                <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+                                <span>(82) 0000-0000</span>
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 0.75rem; color: var(--navy-900); font-weight: 500;">
+                                <i data-lucide="mail" style="width: 20px; height: 20px;"></i>
+                                <span>contato@impactamais.com.br</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Formulário -->
+                    <div class="animate-up" style="--delay: 0.2s;">
+                        <div class="card" style="padding: 2.5rem; border-radius: 20px; box-shadow: var(--shadow-lg); background: white;">
+                            <h3 style="color: var(--navy-900); margin-bottom: 1.5rem; font-size: 1.25rem;">Preencha o formulário</h3>
+                            
+                            <form action="#" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="name">Nome</label>
+                                        <input type="text" id="name" name="name" placeholder="Digite seu nome" required style="width: 100%;">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label for="phone">Telefone</label>
+                                        <input type="tel" id="phone" name="phone" placeholder="Digite seu telefone" required style="width: 100%;">
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required style="width: 100%;">
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="message">Mensagem</label>
+                                    <textarea id="message" name="message" rows="4" placeholder="Sua mensagem" required style="width: 100%; min-height: 120px;"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">Enviar</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

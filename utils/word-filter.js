@@ -29,8 +29,10 @@ function hasOffensiveWords(text) {
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '');
             
-        // Verifica se a palavra proibida existe como substring
-        return normalizedText.includes(normalizedWord);
+        // Melhoria: Usar Regex com limites de palavra (\b) para evitar falsos positivos
+        // Exemplo: 'cu' não deve bloquear 'cuidado' ou 'curtir'
+        const regex = new RegExp(`\\b${normalizedWord}\\b`, 'i');
+        return regex.test(normalizedText);
     });
 }
 
