@@ -18,7 +18,8 @@
                                 <div style="display: flex; align-items: center; gap: 1.5rem;">
                                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                                         <i data-lucide="tag"
-                                            style="width: 18px; height: 18px; color: var(--emerald-600);"></i>
+                                            style="width: 18px; height: 18px; color: var(--emerald-600);" aria-hidden="true"></i>
+                                        <label for="filterCategory" class="sr-only">Filtrar por Categoria</label>
                                         <select id="filterCategory" onchange="updateFilters()"
                                             style="border: none; background: none; font-weight: 600; cursor: pointer; outline: none; font-family: inherit;">
                                             <option value="Todos" <%=locals.currentCategory==='Todos' ? 'selected' : ''
@@ -37,7 +38,8 @@
                                     </div>
                                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                                         <i data-lucide="sliders-horizontal"
-                                            style="width: 18px; height: 18px; color: var(--emerald-600);"></i>
+                                            style="width: 18px; height: 18px; color: var(--emerald-600);" aria-hidden="true"></i>
+                                        <label for="sortProjects" class="sr-only">Ordenar por</label>
                                         <select id="sortProjects" onchange="updateFilters()"
                                             style="border: none; background: none; font-weight: 600; cursor: pointer; outline: none; font-family: inherit;">
                                             <option value="latest" <%=locals.currentSort==='latest' ? 'selected' : '' %>
@@ -255,16 +257,18 @@
 
             <!-- MODAL COMPARTILHAR (Global para o Feed) -->
             <div id="modal-share"
-                style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
+                style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);"
+                role="dialog" aria-modal="true" aria-labelledby="modal-share-title">
                 <div class="auth-card"
                     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 450px; width: 90%; animation: fadeInUp 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); margin: 0; background: white; border-radius: 12px; padding: 2rem;">
                     <button id="btn-close-share"
-                        style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
-                        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                        style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;"
+                        aria-label="Fechar modal">
+                        <i data-lucide="x" style="width: 18px; height: 18px;" aria-hidden="true"></i>
                     </button>
 
                     <div class="auth-header" style="margin-bottom: 1.5rem; text-align: center;">
-                        <h2 style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
+                        <h2 id="modal-share-title" style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
                         <p id="share-modal-subtitle" style="color: var(--gray-500); margin-top: 0.5rem;">Escolha como
                             espalhar essa iniciativa</p>
                     </div>
@@ -372,6 +376,13 @@
                         modal.style.display = 'none';
                         document.body.style.overflow = 'auto';
                     };
+
+                    // Fechar com a tecla Escape
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && modal.style.display === 'flex') {
+                            closeModal();
+                        }
+                    });
 
                     if (btnClose) btnClose.addEventListener('click', closeModal);
                     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
