@@ -5,12 +5,12 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const helmet = require('helmet');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { MongoStore } = require('connect-mongo');
 const { ObjectId } = require('mongodb');
 const { connectDB, getDB } = require('./db');
 const { hasOffensiveWords } = require('./utils/word-filter');
+const { generateRecoveryKey } = require('./utils/security');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -119,23 +119,18 @@ async function startServer() {
 
                         res.locals.notifications = userDoc.notifications?.reverse() || [];
                         res.locals.unreadCount = res.locals.notifications.filter(n => !n.read).length;
+
+                        // --- EXIBIÇÃO DE NOVA CHAVE DE RECUPERAÇÃO ---
+                        if (req.session.newRecoveryKey) {
+                            res.locals.newRecoveryKey = req.session.newRecoveryKey;
+                            delete req.session.newRecoveryKey;
+                        }
                     }
                 } catch (error) {
                     console.error('Erro no middleware de usuário:', error);
                 }
             }
             next();
-        });
-
-        // CONFIGURAÇÃO DO NODEMAILER (Para envio de e-mails)
-        // O usuário deve configurar estas variáveis no .env para funcionar em produção
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || 'smtp.ethereal.email',
-            port: process.env.EMAIL_PORT || 587,
-            auth: {
-                user: process.env.EMAIL_USER || 'placeholder@example.com',
-                pass: process.env.EMAIL_PASS || 'password_placeholder'
-            }
         });
 
         // --- ROTAS ---
@@ -753,6 +748,16 @@ async function startServer() {
                 if (userDoc && await bcrypt.compare(password, userDoc.password)) {
                     req.session.user = { id: userDoc._id.toString(), name: userDoc.name, email: userDoc.email };
                     
+                    // Geração automática de chave para usuários antigos
+                    if (!userDoc.recoveryKey) {
+                        const key = generateRecoveryKey();
+                        await db.collection('users').updateOne(
+                            { _id: userDoc._id },
+                            { $set: { recoveryKey: key } }
+                        );
+                        req.session.newRecoveryKey = key;
+                    }
+
                     return req.session.save((err) => {
                         if (err) {
                             console.error('[AUTH] Erro ao salvar sessão:', err);
@@ -789,10 +794,13 @@ async function startServer() {
                 }
 
                 const hashedPassword = await bcrypt.hash(password, 10);
+                const recoveryKey = generateRecoveryKey();
+
                 const result = await db.collection('users').insertOne({
                     name,
                     email,
                     password: hashedPassword,
+                    recoveryKey,
                     profilePic: null,
                     bio: '',
                     friends: [],
@@ -803,6 +811,7 @@ async function startServer() {
                 });
 
                 req.session.user = { id: result.insertedId.toString(), name, email };
+                req.session.newRecoveryKey = recoveryKey;
                 req.session.save(() => {
                     res.redirect('/perfil');
                 });
@@ -1157,17 +1166,38 @@ async function startServer() {
 
         // --- ROTAS DE RECUPERAÇÃO DE SENHA ---
         app.get('/esqueci-senha', (req, res) => res.render('esqueci-senha', { error: null, success: null }));
-
         app.post('/esqueci-senha', async (req, res) => {
             const { email } = req.body;
-            console.log(`[RECUPERAÇÃO] Solicitação recebida para: ${email}`);
             try {
                 const userDoc = await db.collection('users').findOne({ email });
                 if (!userDoc) {
                     return res.render('esqueci-senha', { error: 'E-mail não encontrado.', success: null });
                 }
 
-                // Gerar token de 32 bytes (64 hex chars)
+                // Em vez de enviar e-mail, vamos para a etapa de verificação da chave
+                res.render('esqueci-senha-chave', { email, error: null });
+            } catch (error) {
+                console.error('Erro na recuperação de senha:', error);
+                res.render('esqueci-senha', { error: 'Erro interno do servidor.', success: null });
+            }
+        });
+
+        app.post('/esqueci-senha/verificar', async (req, res) => {
+            const { email, recoveryKey } = req.body;
+            try {
+                const userDoc = await db.collection('users').findOne({ 
+                    email: email,
+                    recoveryKey: recoveryKey?.trim().toUpperCase()
+                });
+
+                if (!userDoc) {
+                    return res.render('esqueci-senha-chave', { 
+                        email, 
+                        error: 'Chave de segurança incorreta para este e-mail.' 
+                    });
+                }
+
+                // Chave correta! Gerar token temporário para a troca
                 const token = crypto.randomBytes(32).toString('hex');
                 const expires = Date.now() + 3600000; // 1 hora
 
@@ -1176,38 +1206,11 @@ async function startServer() {
                     { $set: { resetToken: token, resetTokenExpires: expires } }
                 );
 
-                const resetLink = `http://${req.headers.host}/resetar-senha?token=${token}`;
-
-                // Enviar e-mail (usando try/catch pois o SMTP pode falhar se não configurado)
-                try {
-                    await transporter.sendMail({
-                        from: '"Impacta Mais" <no-reply@impactamais.com>',
-                        to: email,
-                        subject: 'Recuperação de Senha - Impacta Mais',
-                        html: `
-                            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-                                <h2 style="color: #0f172a;">Recuperação de Senha</h2>
-                                <p>Olá, <strong>${userDoc.name}</strong>.</p>
-                                <p>Você solicitou a redefinição de senha para sua conta no Impacta Mais. Clique no botão abaixo para criar uma nova senha:</p>
-                                <div style="text-align: center; margin: 30px 0;">
-                                    <a href="${resetLink}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Redefinir Minha Senha</a>
-                                </div>
-                                <p style="font-size: 0.85rem; color: #64748b;">Este link expira em 1 hora. Se você não solicitou isso, ignore este e-mail.</p>
-                            </div>
-                        `
-                    });
-                    res.render('esqueci-senha', { error: null, success: 'Link de recuperação enviado! Verifique sua caixa de entrada.' });
-                } catch (emailError) {
-                    console.error('Erro ao enviar e-mail:', emailError);
-                    // MODO DESENVOLVEDOR: Link direto na tela
-                    res.render('esqueci-senha', { 
-                        error: null, 
-                        success: `🚀 [MODO TESTE ATIVO] Clique aqui para mudar a senha: <a href="${resetLink}" style="font-weight: bold; color: #059669;">REDEFINIR AGORA</a>` 
-                    });
-                }
+                // Redireciona diretamente para a tela de reset com o token
+                res.redirect(`/resetar-senha?token=${token}`);
             } catch (error) {
-                console.error('Erro na recuperação de senha:', error);
-                res.render('esqueci-senha', { error: 'Erro interno do servidor.', success: null });
+                console.error('Erro na verificação da chave:', error);
+                res.render('esqueci-senha', { error: 'Erro ao verificar chave.', success: null });
             }
         });
 

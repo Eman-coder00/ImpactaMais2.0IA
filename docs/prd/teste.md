@@ -25,7 +25,7 @@
     - `bcryptjs` para hashing de senhas.
     - `helmet` para proteção de cabeçalhos.
     - Escapamento de Regex para evitar NoSQL Injection na busca.
-    - Validação de tokens para recuperação de senha.
+    - **Recuperação por Chave de Segurança**: Sistema autossuficiente (sem e-mail) com geração automática de chaves únicas no cadastro ou primeiro login.
     - **Controle de Acesso em Exportações**: Verificação de autorização (Middleware + Lógica de Rota) para garantir que apenas organizadores exportem dados de participantes.
 
 ### Banco de Dados (MongoDB Nativo)
@@ -43,7 +43,7 @@
 ### 🔐 Autenticação e Perfil
 - **Fluxo de Cadastro**: Validação de e-mail único e confirmação de senha com vínculo à Política de Privacidade.
 - **Login Seguro**: Gestão de sessão persistente.
-- **Recuperação de Senha**: Sistema de "Esqueci minha senha" com envio de e-mail (Nodemailer) e tokens de expiração (1h).
+- **Recuperação de Senha**: Sistema de "Esqueci minha senha" via **Chave de Segurança (Recovery Key)**, permitindo recuperação instantânea sem dependência de e-mail.
 - **Edição de Perfil**: Alteração de Biografia e Foto de Perfil (Suporte a Base64).
 - **Painel de Controle do Usuário**: Visualização de projetos criados, amigos e agora uma seção dedicada para **"Meus Eventos"** organizados.
 

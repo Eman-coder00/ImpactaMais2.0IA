@@ -12,7 +12,7 @@
             <div class="auth-header">
                 <a href="/" class="logo" style="display: block; margin-bottom: 1.5rem;"><span>Impacta</span>Mais</a>
                 <h2>Recuperar Senha 🚀</h2>
-                <p>Enviaremos um link de recuperação para o seu e-mail.</p>
+                <p>Insira seu e-mail para identificar sua conta.</p>
             </div>
 
             <% if (locals.error) { %>
@@ -21,19 +21,13 @@
                 </div>
             <% } %>
 
-            <% if (locals.success) { %>
-                <div class="alert alert-success" role="alert" style="background: #f0f7ff; color: #0e5270; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
-                    <%- success %>
-                </div>
-            <% } %>
-
             <form class="auth-form" method="POST" action="/esqueci-senha">
                 <div class="form-group">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required>
+                    <input type="email" id="email" name="email" placeholder="Ex: joao@email.com" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Enviar link</button>
+                <button type="submit" class="btn btn-primary">Próximo passo</button>
             </form>
 
             <div class="auth-footer">

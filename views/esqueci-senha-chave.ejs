@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Verificar Chave 🛡️' }) %>
+<body>
+
+    <a href="/esqueci-senha" class="back-home">
+        <i data-lucide="arrow-left"></i> Alterar e-mail
+    </a>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo" style="display: block; margin-bottom: 1.5rem;"><span>Impacta</span>Mais</a>
+                <h2>Verificar Chave 🛡️</h2>
+                <p>Insira sua chave de segurança para o e-mail: <strong><%= email %></strong></p>
+            </div>
+
+            <% if (locals.error) { %>
+                <div class="alert alert-error" role="alert" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form class="auth-form" method="POST" action="/esqueci-senha/verificar">
+                <input type="hidden" name="email" value="<%= email %>">
+                
+                <div class="form-group">
+                    <label for="recoveryKey">Chave de Segurança</label>
+                    <input type="text" id="recoveryKey" name="recoveryKey" placeholder="IMP-XXXX-XXXX" required style="text-transform: uppercase; letter-spacing: 1px; font-family: monospace; text-align: center; font-size: 1.1rem;">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Validar e Trocar Senha</button>
+            </form>
+
+            <div class="auth-footer" style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--gray-500); line-height: 1.4;">
+                <p>Não tem a chave? <br> Entre em contato com o suporte ou tente lembrar sua senha anterior.</p>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

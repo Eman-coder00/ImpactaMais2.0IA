@@ -10,8 +10,9 @@ O **Impacta Mais** é uma plataforma dinâmica projetada para conectar voluntár
 
 ## 🚀 Funcionalidades Principais
 
-- **Autenticação Segura**: Sistema de login e cadastro com criptografia de senhas (bcrypt).
-- **Recuperação de Senha**: Fluxo completo de redefinição de senha via e-mail com tokens temporários.
+- **Login Seguro**: Gestão de sessão persistente.
+- **Recuperação de Senha**: Sistema de "Esqueci minha senha" via **Chave de Segurança (Recovery Key)**, permitindo recuperação instantânea sem dependência de e-mail.
+- **Edição de Perfil**: Alteração de Biografia e Foto de Perfil (Suporte a Base64).
 - **Rede Social**: Perfis públicos, sistema de amizades, notificações em tempo real e chat privado entre amigos.
 - **Gestão de Projetos**: Criação de projetos sociais com sistema de curtidas (AJAX) e comentários.
 - **Gestão de Eventos**: Sistema inteligente de ciclo de vida com separação entre "Próximos" e "Encerrados", além de filtros dinâmicos por data e hora no feed.
@@ -43,7 +44,7 @@ Seguindo os padrões do projeto CESMAC Blog Stack:
 - **Banco de Dados**: [MongoDB](https://www.mongodb.com/) (Driver Nativo v7.0+)
 - **Estilização**: CSS3 Vanilla (Design Premium & Glassmorphism)
 - **Segurança**: Helmet, BcryptJS, Express-Session, Mongo-Store
-- **Comunicação**: Nodemailer para envios de e-mails transacionais
+- **Chave de Segurança**: Sistema de recuperação de conta autossuficiente (sem e-mail)
 - **Ícones**: [Lucide Icons](https://lucide.dev/)
 
 ---
@@ -67,8 +68,6 @@ Seguindo os padrões do projeto CESMAC Blog Stack:
    MONGODB_DB=cesmac_blog
    PORT=3000
    SESSION_SECRET=sua_chave_secreta_aqui
-   EMAIL_USER=seu-email@exemplo.com
-   EMAIL_PASS=sua-senha-de-aplicativo
    ```
 
 4. **Inicie o servidor:**
