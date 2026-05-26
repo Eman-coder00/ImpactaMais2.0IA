@@ -848,7 +848,9 @@ footer {
     transition: var(--transition-base);
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--emerald-500);
     box-shadow: 0 0 0 3px rgba(18, 103, 141, 0.1);
@@ -1440,7 +1442,7 @@ input:checked + .a11y-slider:before { transform: translateX(20px); }
 .filter-tritan { filter: hue-rotate(180deg) saturate(120%); }
 
 
-/* Overrides Dinâmicos de Acessibilidade */
+/* Overrides Dinï¿½micos de Acessibilidade */
 :root {
     --a11y-font-scale: 1;
     --a11y-line-height: 1.5;

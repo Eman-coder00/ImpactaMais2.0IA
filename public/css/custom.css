@@ -208,7 +208,9 @@ img {
     color: #94a3b8 !important;
 }
 
-.auth-form .form-group input:focus {
+.auth-form .form-group input:focus,
+.auth-form .form-group select:focus,
+.auth-form .form-group textarea:focus {
     outline: none !important;
     border-color: #12678D !important;
     box-shadow: 0 0 0 4px rgba(18, 103, 141, 0.1) !important;
